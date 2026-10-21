@@ -3,12 +3,15 @@ import SwiftData
 import SwiftUI
 
 struct TodayView: View {
+    @Environment(CatalogStore.self) private var store
     @Environment(\.modelContext) private var context
+    @Query private var priceOverrides: [PriceOverride]
     @Query private var profiles: [ProfileRecord]
     @Query(sort: \MealLogEntry.date, order: .reverse) private var log: [MealLogEntry]
     @Query(sort: \ReadyPortion.expiresAt) private var portions: [ReadyPortion]
     @State private var isLoggingFood = false
     @State private var isSuggesting = false
+    @State private var cooking: PlanEntry?
 
     private var todayEntries: [MealLogEntry] {
         log.filter { Calendar.current.isDateInToday($0.date) }
@@ -31,6 +34,10 @@ struct TodayView: View {
                     }
                 }
 
+                if let catalog = store.catalog(with: priceOverrides) {
+                    PlannedTodaySection(catalog: catalog, cooking: $cooking) { isLoggingFood = true }
+                }
+
                 if !portions.isEmpty {
                     Section("Ready in the fridge") {
                         ForEach(portionGroups, id: \.first!.persistentModelID) { group in
@@ -47,7 +54,7 @@ struct TodayView: View {
                                     .buttonStyle(.bordered)
                             }
                             .swipeActions {
-                                Button("Delete", role: .destructive) { context.delete(portion) }
+                                Button("Delete", role: .destructive) { context.delete(portion); context.saveNow() }
                             }
                         }
                     }
@@ -64,12 +71,19 @@ struct TodayView: View {
                     }
                     .onDelete { offsets in
                         for index in offsets { context.delete(todayEntries[index]) }
+                        context.saveNow()
                     }
                 }
             }
             .navigationTitle("Today")
             .sheet(isPresented: $isLoggingFood) { LogFoodView() }
             .sheet(isPresented: $isSuggesting) { SuggestionView() }
+            .fullScreenCover(item: $cooking) { entry in
+                if let catalog = store.catalog(with: priceOverrides), case .recipe(let id) = entry.fill,
+                   let recipe = catalog.recipes.first(where: { $0.id == id }) {
+                    PlannedCookingView(entry: entry, recipe: recipe, catalog: catalog)
+                }
+            }
         }
     }
 
@@ -91,5 +105,6 @@ struct TodayView: View {
     private func eat(_ portion: ReadyPortion) {
         context.insert(MealLogEntry(title: portion.title, recipeID: portion.recipeID, nutrition: portion.nutrition))
         context.delete(portion)
+        context.saveNow()
     }
 }

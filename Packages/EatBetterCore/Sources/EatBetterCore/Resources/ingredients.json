@@ -196,5 +196,17 @@
     "per100g": {"kcal": 748, "protein": 0.5, "fat": 82.5, "carbs": 0.8},
     "packGrams": 200, "packPriceUAH": 90,
     "units": [{"name": {"en": "tbsp", "uk": "ст. л."}, "grams": 15}]
+  },
+  {
+    "id": "flour", "name": {"en": "Wheat flour", "uk": "Борошно пшеничне"}, "category": "grains",
+    "per100g": {"kcal": 334, "protein": 10.3, "fat": 1.1, "carbs": 70},
+    "packGrams": 1000, "packPriceUAH": 30,
+    "units": [{"name": {"en": "tbsp", "uk": "ст. л."}, "grams": 10}, {"name": {"en": "cup (250 ml)", "uk": "склянка (250 мл)"}, "grams": 160}]
+  },
+  {
+    "id": "kefir", "name": {"en": "Kefir 2.5%", "uk": "Кефір 2.5%"}, "category": "dairyEggs",
+    "per100g": {"kcal": 50, "protein": 2.9, "fat": 2.5, "carbs": 4},
+    "packGrams": 900, "packPriceUAH": 55,
+    "units": [{"name": {"en": "cup (250 ml)", "uk": "склянка (250 мл)"}, "grams": 250}]
   }
 ]

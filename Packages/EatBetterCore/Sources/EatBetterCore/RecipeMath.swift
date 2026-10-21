@@ -36,4 +36,12 @@ public extension Recipe {
         }
         return copy
     }
+
+    /// A copy for exactly `count` servings (at least 1), with the same amount per serving.
+    func scaled(toServings count: Int) -> Recipe {
+        let count = max(count, 1)
+        var copy = scaled(by: Double(count) / Double(max(servings, 1)))
+        copy.servings = count
+        return copy
+    }
 }

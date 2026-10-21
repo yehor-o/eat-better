@@ -79,6 +79,17 @@ private func bundledCatalog() throws -> Catalog {
         #expect(abs(catalog.totalNutrition(of: tripled).kcal - catalog.totalNutrition(of: recipe).kcal * 3) < 0.001)
     }
 
+    @Test func scalingToServingsKeepsAmountPerServing() throws {
+        let catalog = try bundledCatalog()
+        let recipe = try #require(catalog.recipes.first { $0.servings == 2 })
+        let five = recipe.scaled(toServings: 5)
+        #expect(five.servings == 5)
+        #expect(five.ingredients.map(\.grams) == recipe.ingredients.map { $0.grams * 2.5 })
+        let perServing = catalog.nutritionPerServing(of: recipe)
+        #expect(abs(catalog.nutritionPerServing(of: five).kcal - perServing.kcal) < 0.001)
+        #expect(recipe.scaled(toServings: 0).servings == 1)
+    }
+
     @Test func householdAmountUsesUnits() throws {
         let catalog = try bundledCatalog()
         let eggs = try #require(catalog.householdAmount(ingredientID: "egg", grams: 150))
@@ -386,5 +397,170 @@ private func bundledCatalog() throws -> Catalog {
         let recipe = try #require(catalog.recipes.first { $0.id == "demo_oatmeal_banana" })
         let fills: [PlanSlot: SlotFill] = [PlanSlot(day: 0, meal: .breakfast): .recipe(recipe.id), PlanSlot(day: 0, meal: .lunch): .outside]
         #expect(MealPlanner.nutrition(day: 0, fills: fills, catalog: catalog) == catalog.nutritionPerServing(of: recipe))
+    }
+}
+
+@Suite struct SnackPlanTests {
+    let yogurt = PlanProduct(id: "my-1", name: "Yogurt", portion: Nutrition(kcal: 250, protein: 10, fat: 8, carbs: 30), priceUAH: 45)
+    let target = Nutrition(kcal: 2900, protein: 126, fat: 70, carbs: 400)
+
+    func snacks(_ fills: [PlanSlot: SlotFill], day: Int) -> [SlotFill] {
+        fills.filter { $0.key.day == day && $0.key.meal == .snack }.sorted { $0.key < $1.key }.map(\.value)
+    }
+
+    @Test func everyDayGetsOneOrTwoSnacksAndGetsCloserToTarget() throws {
+        let catalog = try bundledCatalog()
+        let snackIDs = Set(catalog.recipes.filter { $0.mealTypes.contains(.snack) }.map(\.id))
+        let without = MealPlanner.fill(MealPlanner.Request(days: 3, dailyTarget: target), catalog: catalog)
+        let request = MealPlanner.Request(days: 3, dailyTarget: target, snacksPerDay: 2, products: [yogurt])
+        let fills = MealPlanner.fill(request, catalog: catalog)
+        for d in 0..<3 {
+            let daySnacks = snacks(fills, day: d)
+            #expect((1...2).contains(daySnacks.count), "day \(d)")
+            for snack in daySnacks {
+                switch snack {
+                case .recipe(let id): #expect(snackIDs.contains(id))
+                case .product(let id): #expect(id == yogurt.id)
+                case .outside: Issue.record("outside is never planned automatically")
+                }
+            }
+            let before = MealPlanner.nutrition(day: d, fills: without, catalog: catalog).kcal
+            let after = MealPlanner.nutrition(day: d, fills: fills, catalog: catalog, products: [yogurt]).kcal
+            #expect(abs(target.kcal - after) < abs(target.kcal - before))
+        }
+    }
+
+    @Test func secondSnackOnlyWhenTheDayIsShort() throws {
+        let catalog = try bundledCatalog()
+        // A tiny target is met by the meals: still one snack, never a second one.
+        let small = MealPlanner.fill(
+            MealPlanner.Request(days: 2, dailyTarget: Nutrition(kcal: 800, protein: 50, fat: 30, carbs: 80), snacksPerDay: 2),
+            catalog: catalog
+        )
+        #expect(snacks(small, day: 0).count == 1)
+        #expect(snacks(small, day: 1).count == 1)
+        // No target known: one snack.
+        let unknown = MealPlanner.fill(MealPlanner.Request(days: 1, snacksPerDay: 2), catalog: catalog)
+        #expect(snacks(unknown, day: 0).count == 1)
+    }
+
+    @Test func occasionalAndBreakfastOnlyDishesAreNotSnacks() throws {
+        let base = try bundledCatalog()
+        let recipes = base.recipes.map { recipe -> Recipe in
+            var copy = recipe
+            copy.occasional = recipe.id == "demo_cottage_banana"
+            return copy
+        }
+        let catalog = try Catalog(ingredients: Array(base.ingredients.values), recipes: recipes)
+        let fills = MealPlanner.fill(MealPlanner.Request(days: 3, dailyTarget: target, snacksPerDay: 2), catalog: catalog)
+        let used = Set(fills.filter { $0.key.meal == .snack }.map(\.value))
+        #expect(!used.contains(.recipe("demo_cottage_banana")))
+        #expect(!used.contains(.recipe("demo_oatmeal_banana")))
+    }
+
+    @Test func fixedSnackIsKeptAndProductsAreBought() throws {
+        let catalog = try bundledCatalog()
+        let slot = PlanSlot(day: 0, meal: .snack)
+        let fills = MealPlanner.fill(
+            MealPlanner.Request(days: 2, fixed: [slot: .product(yogurt.id)], dailyTarget: target, snacksPerDay: 1, products: [yogurt]),
+            catalog: catalog
+        )
+        #expect(fills[slot] == .product(yogurt.id))
+        let purchases = MealPlanner.productPurchases(for: fills, products: [yogurt])
+        let count = fills.values.filter { $0 == .product(yogurt.id) }.count
+        #expect(purchases.first?.count == count)
+        #expect(purchases.first?.costUAH == Double(count) * 45)
+    }
+
+    @Test func secondSnackComesAfterDinner() {
+        #expect(PlanSlot(day: 0, meal: .snack) < PlanSlot(day: 0, meal: .dinner))
+        #expect(PlanSlot(day: 0, meal: .dinner) < PlanSlot(day: 0, meal: .snack, number: 1))
+        #expect(PlanSlot(day: 0, meal: .snack, number: 1) < PlanSlot(day: 1, meal: .breakfast))
+    }
+}
+
+@Suite struct PackPriceTests {
+    @Test func packAndPriceReplaceTheCatalogOnes() throws {
+        let catalog = try bundledCatalog().applying([
+            PackPrice(ingredientID: "buckwheat", packGrams: 800, packPriceUAH: 58),
+            PackPrice(ingredientID: "egg", packPriceUAH: 70),
+            PackPrice(ingredientID: "unknown", packPriceUAH: 10),
+            PackPrice(ingredientID: "rice_white", packPriceUAH: 0),
+        ])
+        let original = try bundledCatalog()
+        #expect(catalog.ingredient("buckwheat")?.packGrams == 800)
+        #expect(catalog.ingredient("buckwheat")?.packPriceUAH == 58)
+        #expect(catalog.ingredient("egg")?.packGrams == original.ingredient("egg")?.packGrams)
+        #expect(catalog.ingredient("egg")?.packPriceUAH == 70)
+        #expect(catalog.ingredient("rice_white") == original.ingredient("rice_white"))
+        #expect(catalog.ingredient("unknown") == nil)
+        // 1000 g of buckwheat in 800 g packs: 2 packs.
+        let recipe = Recipe(id: "r", name: .init(en: "R", uk: "R"), mealTypes: [.lunch], servings: 1, totalMinutes: 5,
+                            ingredients: [RecipeIngredient(ingredientID: "buckwheat", grams: 1000)], steps: [])
+        let list = ShoppingPlanner.list(for: [PlannedBatch(recipe: recipe)], catalog: catalog, available: [])
+        #expect(list.items.first?.packs == 2)
+        #expect(list.totalUAH == 116)
+    }
+
+    @Test func privatePriceFileDecodes() throws {
+        let json = #"[{"ingredient": "egg", "packGrams": 600, "packPriceUAH": 72.5, "note": "10 eggs"}, {"ingredient": "milk", "packPriceUAH": 50}]"#
+        let packs = try JSONDecoder().decode([PackPrice].self, from: Data(json.utf8))
+        #expect(packs == [PackPrice(ingredientID: "egg", packGrams: 600, packPriceUAH: 72.5), PackPrice(ingredientID: "milk", packPriceUAH: 50)])
+    }
+}
+
+@Suite struct BackupTests {
+    let date = Date(timeIntervalSinceReferenceDate: 800_000_000.123456)
+
+    var sample: Backup {
+        Backup(
+            exportedAt: date,
+            profile: .init(weightKg: 70, heightCm: 180, ageYears: 25, sex: "male", activity: "moderate", goal: "gain", defaultStorageDays: 7),
+            settings: .init(shoppingWeekdays: "4,7", language: "uk"),
+            fridge: ["egg", "milk"],
+            prices: [.init(ingredientID: "egg", packPriceUAH: 70, packGrams: 600)],
+            products: [.init(id: "my-1", name: "Yogurt", per100g: Nutrition(kcal: 90, protein: 5, fat: 3, carbs: 10), packGrams: 300, packPriceUAH: 45, createdAt: date)],
+            readyPortions: [.init(recipeID: "r", title: "Dish", nutrition: .zero, cookedAt: date, expiresAt: date.addingTimeInterval(86_400))],
+            log: [.init(date: date, title: "Toast", recipeID: nil, nutrition: Nutrition(kcal: 300, protein: 10, fat: 10, carbs: 40))],
+            plan: [.init(day: date, meal: "snack", number: 1, recipeID: nil, productID: "my-1", isOutside: false, isManual: true, cookedAt: nil)],
+            bought: ["milk"]
+        )
+    }
+
+    @Test func roundTripIsExact() throws {
+        let decoded = try Backup.decode(sample.encoded())
+        #expect(decoded == sample)
+    }
+
+    @Test func missingSectionsAreEmpty() throws {
+        let decoded = try Backup.decode(Data(#"{"version": 1, "fridge": ["egg"]}"#.utf8))
+        #expect(decoded.fridge == ["egg"])
+        #expect(decoded.profile == nil)
+        #expect(decoded.log.isEmpty && decoded.readyPortions.isEmpty && decoded.products.isEmpty)
+    }
+
+    @Test func newerFilesAreRefused() {
+        #expect(throws: Backup.FileError.newerVersion(99)) {
+            try Backup.decode(Data(#"{"version": 99}"#.utf8))
+        }
+    }
+
+    @Test func addingKeepsTheDeviceAndNeverDoubles() {
+        var device = Backup(
+            profile: .init(weightKg: 60, heightCm: 170, ageYears: 30, sex: "female", activity: "light", goal: "maintain", defaultStorageDays: 5),
+            fridge: ["bread", "egg"],
+            prices: [.init(ingredientID: "egg", packPriceUAH: 99)]
+        )
+        device.log = [.init(date: date.addingTimeInterval(60), title: "Apple", recipeID: nil, nutrition: .zero)]
+        let once = device.adding(sample)
+        #expect(once.profile == device.profile)
+        #expect(once.settings == sample.settings)
+        #expect(once.fridge == ["bread", "egg", "milk"])
+        #expect(once.prices == device.prices)
+        #expect(once.products == sample.products)
+        #expect(once.log.count == 2)
+        #expect(once.readyPortions.count == 1)
+        #expect(once.plan.count == 1)
+        #expect(once.adding(sample) == once)
     }
 }

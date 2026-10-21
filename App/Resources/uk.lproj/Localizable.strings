@@ -189,3 +189,80 @@
 "Added to \"Ready in the fridge\"" = "Додано в «Готове в холодильнику»";
 "Special dishes" = "Святкові страви";
 "The plan never adds these on its own." = "План не додає їх сам — лише коли вибереш.";
+
+/* Plan: snacks (T-019) */
+"Add another snack" = "Додати ще перекус";
+"Remove this snack" = "Прибрати цей перекус";
+"From My products" = "З «Моїх продуктів»";
+"%lld kcal · %lld g protein" = "%lld ккал · %lld г білка";
+"no price" = "без ціни";
+"Snacks from My products. Add a pack price in My products to count them in the total." = "Перекуси з «Моїх продуктів». Додай ціну упаковки в «Моїх продуктах», щоб вона рахувалась у сумі.";
+"Pack price, ₴" = "Ціна упаковки, ₴";
+"The price is optional. The plan uses it for snacks on the shopping list." = "Ціна не обов'язкова. План бере її для перекусів у списку покупок.";
+
+/* Ingredient card (T-011) */
+"Per 100 g" = "На 100 г";
+"Household measures" = "Побутові міри";
+"Price" = "Ціна";
+"Catalog" = "Каталог";
+"Yours" = "Твоя";
+"My price" = "Моя ціна";
+"Pack, g" = "Упаковка, г";
+"Price, ₴" = "Ціна, ₴";
+"Save my price" = "Зберегти мою ціну";
+"Saved" = "Збережено";
+"Use the catalog price" = "Повернути ціну з каталогу";
+"What you see in your store. Stays only on this iPhone and is used for recipes, the plan and the shopping list." = "Те, що бачиш у своєму магазині. Зберігається лише на цьому iPhone і рахується в рецептах, плані та списку покупок.";
+"Store prices" = "Ціни магазинів";
+
+/* Cooking mode (T-012) */
+"Start cooking" = "Почати готувати";
+"Amount" = "Кількість";
+"Step %lld" = "Крок %lld";
+"Step %lld of %lld" = "Крок %lld з %lld";
+"Done" = "Готово";
+"Back" = "Назад";
+"Next" = "Далі";
+"Start %lld min timer" = "Таймер на %lld хв";
+"Time is up" = "Час вийшов";
+"Stop timer" = "Зупинити таймер";
+"Timer done: step %lld" = "Таймер: крок %lld готовий";
+"Stop the timers and close?" = "Зупинити таймери й закрити?";
+"Stop timers and close" = "Зупинити й закрити";
+"Enjoy your meal!" = "Смачного!";
+"Eat 1 now, %lld to Ready" = "З'їсти 1 зараз, %lld у «Готове»";
+
+/* Backup (T-015) */
+"Backup" = "Резервна копія";
+"Export backup" = "Експортувати копію";
+"Import backup" = "Імпортувати копію";
+"Last export: %@. Save the file in Files or iCloud Drive." = "Останній експорт: %@. Зберігай файл у «Файлах» або iCloud Drive.";
+"No backup yet. Export one before reinstalling the app. Save the file in Files or iCloud Drive." = "Копії ще немає. Зроби її перед перевстановленням застосунку. Зберігай файл у «Файлах» або iCloud Drive.";
+"Backup saved." = "Копію збережено.";
+"Import backup?" = "Імпортувати копію?";
+"Replace everything" = "Замінити все";
+"Add to what is here" = "Додати до наявного";
+"OK" = "OK";
+"File from %@: %lld fridge items, %lld products, %lld prices, %lld ready portions, %lld log entries, %lld plan meals." = "Файл від %@: у холодильнику %lld, продуктів %lld, цін %lld, готових порцій %lld, записів у журналі %lld, прийомів у плані %lld.";
+"Replace: the app becomes exactly like the file. Add: nothing is removed, missing items are added." = "«Замінити»: усе стане точно як у файлі. «Додати»: нічого не видаляється, додається те, чого бракує.";
+"This backup comes from a newer version of the app." = "Цю копію зроблено новішою версією застосунку.";
+"Could not read this file as a backup." = "Не вдалося прочитати цей файл як резервну копію.";
+"Backup imported." = "Копію імпортовано.";
+
+/* Today: plan (T-025) */
+"Planned for today" = "За планом сьогодні";
+"Cook" = "Приготувати";
+"Eaten" = "З'їдено";
+"Weight, kg" = "Вага, кг";
+"Height, cm" = "Зріст, см";
+"Age, years" = "Вік, років";
+
+/* Fridge: search and filter */
+"Product or category" = "Продукт або категорія";
+"Show" = "Показати";
+"Everything" = "Усе";
+"At home" = "Є вдома";
+"Not at home" = "Немає вдома";
+"Category" = "Категорія";
+"All categories" = "Усі категорії";
+"Filter" = "Фільтр";

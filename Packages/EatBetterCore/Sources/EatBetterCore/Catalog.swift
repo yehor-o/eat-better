@@ -22,6 +22,12 @@ public struct Catalog: Sendable {
         self.recipes = recipes
     }
 
+    /// Already checked: same recipes, ingredients changed only in price or pack.
+    init(validated ingredients: [String: Ingredient], recipes: [Recipe]) {
+        self.ingredients = ingredients
+        self.recipes = recipes
+    }
+
     public func ingredient(_ id: String) -> Ingredient? { ingredients[id] }
 
     /// Shared ingredient catalog bundled with the package.
@@ -43,5 +49,44 @@ public struct Catalog: Sendable {
             throw CatalogError.missingResource(name)
         }
         return try JSONDecoder().decode(T.self, from: Data(contentsOf: url))
+    }
+}
+
+/// A store pack and its price for one ingredient: from the private price file (T-007) or the
+/// owner's own entry on the device (T-011).
+public struct PackPrice: Codable, Hashable, Sendable {
+    public var ingredientID: String
+    /// 0 keeps the catalog pack size.
+    public var packGrams: Double
+    public var packPriceUAH: Double
+
+    public init(ingredientID: String, packGrams: Double = 0, packPriceUAH: Double) {
+        self.ingredientID = ingredientID
+        self.packGrams = packGrams
+        self.packPriceUAH = packPriceUAH
+    }
+
+    enum CodingKeys: String, CodingKey { case ingredientID = "ingredient", packGrams, packPriceUAH }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        ingredientID = try c.decode(String.self, forKey: .ingredientID)
+        packGrams = try c.decodeIfPresent(Double.self, forKey: .packGrams) ?? 0
+        packPriceUAH = try c.decode(Double.self, forKey: .packPriceUAH)
+    }
+}
+
+public extension Catalog {
+    /// The same catalog with these packs and prices in place of the catalog ones. Unknown
+    /// ingredients and non-positive prices are ignored.
+    func applying(_ packs: [PackPrice]) -> Catalog {
+        var byID = ingredients
+        for pack in packs where pack.packPriceUAH > 0 {
+            guard var ingredient = byID[pack.ingredientID] else { continue }
+            ingredient.packPriceUAH = pack.packPriceUAH
+            if pack.packGrams > 0 { ingredient.packGrams = pack.packGrams }
+            byID[pack.ingredientID] = ingredient
+        }
+        return Catalog(validated: byID, recipes: recipes)
     }
 }

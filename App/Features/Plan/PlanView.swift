@@ -11,13 +11,14 @@ struct PlanView: View {
     @Query private var pantry: [PantryItem]
     @Query private var priceOverrides: [PriceOverride]
     @Query private var profiles: [ProfileRecord]
+    @Query(sort: \MyProduct.name) private var myProducts: [MyProduct]
 
     @State private var picking: PlanSlot?
 
     var body: some View {
         NavigationStack {
             Group {
-                if let catalog = store.catalog {
+                if let catalog = store.catalog(with: priceOverrides) {
                     plan(catalog: catalog)
                 } else {
                     ContentUnavailableView("Could not load recipes", systemImage: "exclamationmark.triangle")
@@ -32,7 +33,8 @@ struct PlanView: View {
         let batches = MealPlanner.batches(for: fills, catalog: catalog, defaultStorageDays: storageDays)
         // A cooked batch needs nothing more from the store.
         let toCook = batches.filter { !cookEntryCooked($0) }
-        let shopping = MealPlanner.shopping(for: toCook, catalog: catalog, available: available, prices: prices)
+        var shopping = MealPlanner.shopping(for: toCook, catalog: catalog, available: available)
+        shopping.products = MealPlanner.productPurchases(for: fills, products: products)
         let target = profiles.first.map { DailyTargets.targets(for: $0.bodyProfile) }
 
         return List {
@@ -54,14 +56,14 @@ struct PlanView: View {
 
             ForEach(0..<period.days, id: \.self) { day in
                 Section {
-                    ForEach(MealPlanner.defaultMeals, id: \.self) { meal in
-                        let slot = PlanSlot(day: day, meal: meal)
-                        slotRow(slot, fill: fills[slot], batch: batches.first { $0.slots.contains(slot) }, catalog: catalog)
+                    ForEach(slots(day: day, fills: fills)) { slot in
+                        slotRow(slot, fill: fills[slot], batch: batches.first { $0.slots.contains(slot) }, catalog: catalog,
+                                canAddSnack: slot.meal == .snack && slot.number == 0 && fills[PlanSlot(day: day, meal: .snack, number: 1)] == nil)
                     }
                 } header: {
                     Text(date(of: day), format: .dateTime.weekday(.wide).day().month())
                 } footer: {
-                    dayFooter(MealPlanner.nutrition(day: day, fills: fills, catalog: catalog), target: target,
+                    dayFooter(MealPlanner.nutrition(day: day, fills: fills, catalog: catalog, products: products), target: target,
                               hasOutside: fills.contains { $0.key.day == day && $0.value == .outside })
                 }
             }
@@ -71,7 +73,7 @@ struct PlanView: View {
                     ShoppingListView(plan: shopping, catalog: catalog)
                 } label: {
                     LabeledContent {
-                        Text(verbatim: "~\(Int(shopping.list.totalUAH.rounded())) ₴")
+                        Text(verbatim: "~\(Int(shopping.totalUAH.rounded())) ₴")
                     } label: {
                         Label("Shopping list", systemImage: "cart")
                     }
@@ -79,15 +81,17 @@ struct PlanView: View {
             }
         }
         .sheet(item: $picking) { slot in
-            RecipePickerView(meal: slot.meal, catalog: catalog) { recipe in
+            RecipePickerView(meal: slot.meal, catalog: catalog, products: slot.meal == .snack ? myProducts : []) { recipe in
                 set(slot, recipeID: recipe.id)
+            } onPickProduct: { product in
+                set(slot, productID: product.stableID)
             }
         }
     }
 
     // MARK: Rows
 
-    private func slotRow(_ slot: PlanSlot, fill: SlotFill?, batch: PlanBatch?, catalog: Catalog) -> some View {
+    private func slotRow(_ slot: PlanSlot, fill: SlotFill?, batch: PlanBatch?, catalog: Catalog, canAddSnack: Bool) -> some View {
         let entry = entry(for: slot)
         let isCookSlot = batch?.cookSlot == slot
         return Menu {
@@ -95,6 +99,14 @@ struct PlanView: View {
             Button("Outside food", systemImage: "takeoutbag.and.cup.and.straw") { setOutside(slot) }
             if entry?.isManual == true {
                 Button("Let the app choose", systemImage: "wand.and.stars") { clear(slot) }
+            }
+            if slot.number > 0, entry != nil {
+                Button("Remove this snack", systemImage: "minus.circle") { remove(slot) }
+            }
+            if canAddSnack {
+                Button("Add another snack", systemImage: "plus.circle") {
+                    picking = PlanSlot(day: slot.day, meal: .snack, number: 1)
+                }
             }
             if isCookSlot, let batch, entry?.cookedAt == nil {
                 Button("Cooked: \(batch.recipe.servings) portions to Ready", systemImage: "frying.pan") {
@@ -113,12 +125,22 @@ struct PlanView: View {
                     case .recipe:
                         Text(batch?.recipe.name.current ?? "")
                             .foregroundStyle(.primary)
+                    case .product(let id):
+                        Text(verbatim: products.first { $0.id == id }?.name ?? "—")
+                            .foregroundStyle(.primary)
+                        Label("From My products", systemImage: "basket")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     case .outside:
                         Text("Outside food").foregroundStyle(.primary)
                     case nil:
                         Text(verbatim: "—").foregroundStyle(.secondary)
                     }
-                    if let batch, case .recipe = fill {
+                    if entry?.eatenAt != nil {
+                        Label("Eaten", systemImage: "checkmark.circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.green)
+                    } else if let batch, case .recipe = fill {
                         batchNote(batch, slot: slot, cooked: entry?.cookedAt != nil || cookEntryCooked(batch))
                     }
                 }
@@ -197,27 +219,33 @@ struct PlanView: View {
     }
 
     private func entry(for slot: PlanSlot) -> PlanEntry? {
-        entries.first { $0.meal == slot.meal && dayIndex(of: $0) == slot.day }
+        entries.first { $0.meal == slot.meal && $0.number == slot.number && dayIndex(of: $0) == slot.day }
+    }
+
+    /// Main meals and the first snack always; the second snack once it is planned.
+    private func slots(day: Int, fills: [PlanSlot: SlotFill]) -> [PlanSlot] {
+        var slots = (MealPlanner.defaultMeals + [.snack]).map { PlanSlot(day: day, meal: $0) }
+        let second = PlanSlot(day: day, meal: .snack, number: 1)
+        if fills[second] != nil { slots.append(second) }
+        return slots.sorted()
     }
 
     private var currentFills: [PlanSlot: SlotFill] {
         var fills: [PlanSlot: SlotFill] = [:]
         for entry in entries {
             guard let day = dayIndex(of: entry), let fill = entry.fill else { continue }
-            fills[PlanSlot(day: day, meal: entry.meal)] = fill
+            fills[PlanSlot(day: day, meal: entry.meal, number: entry.number)] = fill
         }
         return fills
     }
+
+    private var products: [PlanProduct] { myProducts.map(\.planProduct) }
 
     private func cookEntryCooked(_ batch: PlanBatch) -> Bool {
         entry(for: batch.cookSlot)?.cookedAt != nil
     }
 
     private var available: Set<String> { Set(pantry.map(\.ingredientID)) }
-
-    private var prices: [String: Double] {
-        Dictionary(priceOverrides.map { ($0.ingredientID, $0.packPriceUAH) }, uniquingKeysWith: { a, _ in a })
-    }
 
     private var storageDays: Int { profiles.first?.defaultStorageDays ?? 7 }
 
@@ -229,33 +257,53 @@ struct PlanView: View {
         var fixed: [PlanSlot: SlotFill] = [:]
         for entry in entries {
             guard let day = dayIndex(of: entry), let fill = entry.fill else { continue }
-            if entry.isManual || entry.cookedAt != nil {
-                fixed[PlanSlot(day: day, meal: entry.meal)] = fill
+            // Hand-picked, cooked or already eaten meals stay as they are.
+            if entry.isManual || entry.cookedAt != nil || entry.eatenAt != nil {
+                fixed[PlanSlot(day: day, meal: entry.meal, number: entry.number)] = fill
             } else {
                 context.delete(entry)
             }
         }
         let request = MealPlanner.Request(
-            days: period.days, fixed: fixed, available: available, prices: prices,
+            days: period.days, fixed: fixed, available: available,
             dailyTarget: profiles.first.map { DailyTargets.targets(for: $0.bodyProfile) },
-            defaultStorageDays: storageDays
+            defaultStorageDays: storageDays,
+            snacksPerDay: 2,
+            products: products
         )
         for (slot, fill) in MealPlanner.fill(request, catalog: catalog) where fixed[slot] == nil {
-            guard case .recipe(let id) = fill else { continue }
-            context.insert(PlanEntry(day: date(of: slot.day), meal: slot.meal, recipeID: id, isManual: false))
+            switch fill {
+            case .recipe(let id):
+                context.insert(PlanEntry(day: date(of: slot.day), meal: slot.meal, number: slot.number, recipeID: id, isManual: false))
+            case .product(let id):
+                context.insert(PlanEntry(day: date(of: slot.day), meal: slot.meal, number: slot.number, recipeID: nil, productID: id, isManual: false))
+            case .outside:
+                continue
+            }
         }
         context.saveNow()
     }
 
     private func set(_ slot: PlanSlot, recipeID: String) {
         clear(slot)
-        context.insert(PlanEntry(day: date(of: slot.day), meal: slot.meal, recipeID: recipeID, isManual: true))
+        context.insert(PlanEntry(day: date(of: slot.day), meal: slot.meal, number: slot.number, recipeID: recipeID, isManual: true))
+        context.saveNow()
+    }
+
+    private func set(_ slot: PlanSlot, productID: String) {
+        clear(slot)
+        context.insert(PlanEntry(day: date(of: slot.day), meal: slot.meal, number: slot.number, recipeID: nil, productID: productID, isManual: true))
         context.saveNow()
     }
 
     private func setOutside(_ slot: PlanSlot) {
         clear(slot)
-        context.insert(PlanEntry(day: date(of: slot.day), meal: slot.meal, recipeID: nil, isOutside: true, isManual: true))
+        context.insert(PlanEntry(day: date(of: slot.day), meal: slot.meal, number: slot.number, recipeID: nil, isOutside: true, isManual: true))
+        context.saveNow()
+    }
+
+    private func remove(_ slot: PlanSlot) {
+        clear(slot)
         context.saveNow()
     }
 
@@ -265,7 +313,7 @@ struct PlanView: View {
 }
 
 extension PlanSlot: @retroactive Identifiable {
-    public var id: String { "\(day)-\(meal.rawValue)" }
+    public var id: String { "\(day)-\(meal.rawValue)-\(number)" }
 }
 
 /// Weekdays the owner usually goes shopping.
@@ -304,7 +352,9 @@ struct ShoppingDaysView: View {
 struct RecipePickerView: View {
     let meal: MealType
     let catalog: Catalog
+    var products: [MyProduct] = []
     let onPick: (Recipe) -> Void
+    var onPickProduct: (MyProduct) -> Void = { _ in }
 
     @Environment(\.dismiss) private var dismiss
 
@@ -315,6 +365,18 @@ struct RecipePickerView: View {
         NavigationStack {
             List {
                 Section { rows(fitting) } header: { Text(meal.title) }
+                if !products.isEmpty {
+                    Section("My products") {
+                        ForEach(products) { product in
+                            Button {
+                                onPickProduct(product)
+                                dismiss()
+                            } label: {
+                                productRow(product).foregroundStyle(.primary)
+                            }
+                        }
+                    }
+                }
                 if !special.isEmpty {
                     Section {
                         rows(special)
@@ -333,6 +395,16 @@ struct RecipePickerView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
             }
+        }
+    }
+
+    private func productRow(_ product: MyProduct) -> some View {
+        let portion = product.planProduct.portion
+        return VStack(alignment: .leading, spacing: 2) {
+            Text(verbatim: product.name)
+            Text("\(Int(portion.kcal.rounded())) kcal · \(Int(portion.protein.rounded())) g protein")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 

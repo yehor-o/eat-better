@@ -63,15 +63,22 @@ final class PantryItem {
     }
 }
 
-/// Per-device pack price that replaces the catalog estimate.
+/// Per-device pack price that replaces the catalog estimate (T-011).
 @Model
 final class PriceOverride {
     @Attribute(.unique) var ingredientID: String
     var packPriceUAH: Double
+    /// Pack size the price is for; 0 keeps the catalog pack.
+    var packGrams: Double = 0
 
-    init(ingredientID: String, packPriceUAH: Double) {
+    init(ingredientID: String, packPriceUAH: Double, packGrams: Double = 0) {
         self.ingredientID = ingredientID
         self.packPriceUAH = packPriceUAH
+        self.packGrams = packGrams
+    }
+
+    var packPrice: PackPrice {
+        PackPrice(ingredientID: ingredientID, packGrams: packGrams, packPriceUAH: packPriceUAH)
     }
 }
 
@@ -140,15 +147,30 @@ final class MyProduct {
     /// Pack weight in grams; 0 when the product is not sold in packs.
     var packGrams: Double
     var createdAt: Date
+    /// Price of one pack (of 100 g when there is no pack), for the plan's shopping list.
+    var packPriceUAH: Double?
+    /// Set when the product came from a backup; older products use their creation time.
+    var productID: String?
 
-    init(name: String, per100g: Nutrition, packGrams: Double) {
+    init(name: String, per100g: Nutrition, packGrams: Double, packPriceUAH: Double? = nil, createdAt: Date = .now, productID: String? = nil) {
         self.name = name
         self.kcal = per100g.kcal
         self.protein = per100g.protein
         self.fat = per100g.fat
         self.carbs = per100g.carbs
         self.packGrams = packGrams
-        self.createdAt = .now
+        self.packPriceUAH = packPriceUAH
+        self.createdAt = createdAt
+        self.productID = productID
+    }
+
+    /// Stays the same across backups, so plan entries keep pointing at the product.
+    var stableID: String { productID ?? "my-\(createdAt.timeIntervalSince1970)" }
+
+    /// One portion for the plan: the pack, or 100 g.
+    var planProduct: PlanProduct {
+        let grams = packGrams > 0 ? packGrams : 100
+        return PlanProduct(id: stableID, name: name, portion: per100g * (grams / 100), priceUAH: packPriceUAH)
     }
 
     var per100g: Nutrition {
@@ -163,7 +185,7 @@ final class MyProduct {
 
     var food: Food {
         let pack = packGrams > 0 ? [HouseholdUnit(name: LocalizedText(en: "pack", uk: "упаковка"), grams: packGrams)] : []
-        return Food(id: "my-\(createdAt.timeIntervalSince1970)", name: LocalizedText(en: name, uk: name), per100g: per100g, units: pack)
+        return Food(id: stableID, name: LocalizedText(en: name, uk: name), per100g: per100g, units: pack)
     }
 }
 
@@ -175,14 +197,22 @@ final class PlanEntry {
     var day: Date
     var mealRaw: String
     var recipeID: String?
+    /// A product from "My products" planned as a snack.
+    var productID: String?
+    /// 1 for the second snack of a day.
+    var number: Int = 0
     var isOutside: Bool
     var isManual: Bool
     var cookedAt: Date?
+    /// Set when the owner ate this meal from the Today tab.
+    var eatenAt: Date?
 
-    init(day: Date, meal: MealType, recipeID: String?, isOutside: Bool = false, isManual: Bool) {
+    init(day: Date, meal: MealType, number: Int = 0, recipeID: String?, productID: String? = nil, isOutside: Bool = false, isManual: Bool) {
         self.day = day
         self.mealRaw = meal.rawValue
+        self.number = number
         self.recipeID = recipeID
+        self.productID = productID
         self.isOutside = isOutside
         self.isManual = isManual
     }
@@ -191,6 +221,7 @@ final class PlanEntry {
 
     var fill: SlotFill? {
         if isOutside { return .outside }
+        if let productID { return .product(productID) }
         return recipeID.map(SlotFill.recipe)
     }
 }

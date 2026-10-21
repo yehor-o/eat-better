@@ -20,7 +20,7 @@ struct SuggestionView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if let catalog = store.catalog, let suggestions {
+                if let catalog = store.catalog(with: priceOverrides), let suggestions {
                     if suggestions.isEmpty {
                         ContentUnavailableView(
                             "Nothing to suggest yet",
@@ -44,7 +44,7 @@ struct SuggestionView: View {
                 }
             }
             .onAppear {
-                if suggestions == nil, let catalog = store.catalog { suggestions = makeSuggestions(catalog: catalog) }
+                if suggestions == nil, let catalog = store.catalog(with: priceOverrides) { suggestions = makeSuggestions(catalog: catalog) }
             }
         }
     }
@@ -75,6 +75,7 @@ struct SuggestionView: View {
                         if let portion = readyPortion(id: id) {
                             context.insert(MealLogEntry(title: portion.title, recipeID: portion.recipeID, nutrition: portion.nutrition))
                             context.delete(portion)
+                            context.saveNow()
                         }
                         dismiss()
                     }
@@ -110,7 +111,7 @@ struct SuggestionView: View {
             Text("You have everything · \(suggestion.minutes ?? 0) min")
                 .foregroundStyle(.green)
         case .buyFirst(_, let missing):
-            let cost = missing.reduce(0) { $0 + (price(of: $1)) }
+            let cost = missing.reduce(0) { $0 + $1.packPriceUAH }
             Text("Buy first: \(missing.map(\.name.current).joined(separator: ", ")) · ~\(Int(cost.rounded())) ₴")
                 .foregroundStyle(.orange)
         }
@@ -137,7 +138,7 @@ struct SuggestionView: View {
         let context = MealSuggester.Context(
             now: .now,
             ready: readyItems,
-            pantry: PantryMatcher.match(catalog: catalog, available: Set(pantry.map(\.ingredientID)), prices: prices),
+            pantry: PantryMatcher.match(catalog: catalog, available: Set(pantry.map(\.ingredientID))),
             eaten: today.reduce(Nutrition.zero) { $0 + $1.nutrition },
             target: profiles.first.map { DailyTargets.targets(for: $0.bodyProfile) },
             recentRecipeIDs: Set(log.filter { $0.date > dayAgo }.compactMap(\.recipeID))
@@ -157,11 +158,4 @@ struct SuggestionView: View {
         portions.first { $0.title == id }
     }
 
-    private var prices: [String: Double] {
-        Dictionary(priceOverrides.map { ($0.ingredientID, $0.packPriceUAH) }, uniquingKeysWith: { a, _ in a })
-    }
-
-    private func price(of ingredient: Ingredient) -> Double {
-        prices[ingredient.id] ?? ingredient.packPriceUAH
-    }
 }

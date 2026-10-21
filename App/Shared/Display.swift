@@ -20,6 +20,21 @@ extension MealType {
 }
 
 extension IngredientCategory {
+    /// The same title as plain text, for search.
+    var localizedName: String {
+        switch self {
+        case .meatFish: String(localized: "Meat & fish")
+        case .dairyEggs: String(localized: "Dairy & eggs")
+        case .grains: String(localized: "Grains & pasta")
+        case .vegetables: String(localized: "Vegetables")
+        case .fruits: String(localized: "Fruits")
+        case .bakery: String(localized: "Bakery")
+        case .oilsSpices: String(localized: "Oils & spices")
+        case .canned: String(localized: "Canned")
+        case .other: String(localized: "Other")
+        }
+    }
+
     var title: LocalizedStringKey {
         switch self {
         case .meatFish: "Meat & fish"
@@ -61,6 +76,17 @@ extension Goal {
         case .gain: "Gain weight"
         case .maintain: "Maintain"
         }
+    }
+}
+
+extension Catalog {
+    /// "150 g · ≈ 3 × egg"; grams only when the ingredient has no household units.
+    func amountText(ingredientID: String, grams: Double) -> String {
+        let base = "\(Int(grams.rounded())) \(String(localized: "g"))"
+        guard let household = householdAmount(ingredientID: ingredientID, grams: grams) else { return base }
+        let count = household.count.formatted(.number.precision(.fractionLength(0...1)))
+        // Unit names may carry their own brackets ("cup (250 ml)"), so no brackets around this part.
+        return "\(base) · ≈ \(count) × \(household.unit.name.current)"
     }
 }
 

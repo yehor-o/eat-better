@@ -42,15 +42,18 @@ App/                      SwiftUI app (iOS 18+)
   Persistence/            SwiftData models (personal data) and CatalogStore (recipes/ingredients)
   Shared/                 small view helpers, localized titles
   Resources/*.lproj/      Localizable.strings (en, uk)
+  Assets.xcassets/        app icon (redraw with scripts/make-app-icon.py, needs Pillow)
 Packages/EatBetterCore/   pure-Swift logic, no UI, builds and tests on Linux and macOS
   Sources/EatBetterCore/  models, DailyTargets, RecipeMath, PantryMatcher, ShoppingPlanner,
-                          Food, ClaudeFoodCode, MealSuggester, MealPlanner
+                          Food, ClaudeFoodCode, MealSuggester, MealPlanner, Backup
   Sources/.../Resources/  ingredients.json (shared), demo-recipes.json, dishes.json
   Tests/                  Swift Testing suites
 Config/                   xcconfig; signing comes from Private/Signing.xcconfig
-scripts/                  copy-private-data.sh (Xcode build phase)
+scripts/                  copy-private-data.sh (Xcode build phase), check-localization.py,
+                          make-app-icon.py
 docs/                     SPEC, PROJECT_STATE, DECISIONS, TASKS, DATA_FORMAT
-Private/                  git-ignored: recipes.json, ingredients.json, dishes.json, Signing.xcconfig, CONTEXT.md
+Private/                  git-ignored: recipes.json, ingredients.json, dishes.json, prices.json,
+                          Signing.xcconfig, CONTEXT.md, backup files
 project.yml               XcodeGen definition (the .xcodeproj is generated, not committed)
 ```
 
@@ -71,6 +74,11 @@ xcodebuild build -project EatBetter.xcodeproj -scheme EatBetter \
 
 Re-run `xcodegen generate` after adding, moving or deleting files.
 
+```sh
+# Lists user-facing strings without a Ukrainian translation (exit 1 if any)
+python3 scripts/check-localization.py
+```
+
 ## Conventions
 
 - Logic goes in `EatBetterCore` with tests; views stay thin. If a view computes something
@@ -80,5 +88,6 @@ Re-run `xcodegen generate` after adding, moving or deleting files.
   `App/Resources/uk.lproj/Localizable.strings`. Add the translation in the same change.
   Recipe and ingredient texts use `LocalizedText { en, uk }` in JSON.
 - Amounts are grams internally; show household measures (`units`) next to grams.
-- Prices are UAH per store pack, approximate (Ukrainian supermarkets). Per-device overrides live in SwiftData.
+- Prices are UAH per store pack, approximate (Ukrainian supermarkets). Researched store prices
+  live in `Private/prices.json` (D-025); per-device overrides live in SwiftData.
 - Data file formats: [docs/DATA_FORMAT.md](docs/DATA_FORMAT.md).
