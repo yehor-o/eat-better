@@ -1,0 +1,98 @@
+[
+  {
+    "id": "egg", "name": {"en": "Egg", "uk": "Яйце"}, "category": "dairyEggs",
+    "per100g": {"kcal": 143, "protein": 12.6, "fat": 9.5, "carbs": 0.7},
+    "packGrams": 500, "packPriceUAH": 60,
+    "units": [{"name": {"en": "egg", "uk": "яйце"}, "grams": 50}]
+  },
+  {
+    "id": "chicken_breast", "name": {"en": "Chicken breast fillet", "uk": "Куряче філе"}, "category": "meatFish",
+    "per100g": {"kcal": 120, "protein": 22.5, "fat": 2.6, "carbs": 0},
+    "packGrams": 1000, "packPriceUAH": 250,
+    "units": []
+  },
+  {
+    "id": "tuna_canned", "name": {"en": "Canned tuna (in own juice)", "uk": "Тунець консервований (у власному соку)"}, "category": "canned",
+    "per100g": {"kcal": 116, "protein": 25.5, "fat": 0.8, "carbs": 0},
+    "packGrams": 185, "packPriceUAH": 70,
+    "units": [{"name": {"en": "can", "uk": "банка"}, "grams": 185}]
+  },
+  {
+    "id": "buckwheat", "name": {"en": "Buckwheat (dry)", "uk": "Гречка (суха)"}, "category": "grains",
+    "per100g": {"kcal": 343, "protein": 13.3, "fat": 3.4, "carbs": 71.5},
+    "packGrams": 1000, "packPriceUAH": 60,
+    "units": [{"name": {"en": "cup (250 ml)", "uk": "склянка (250 мл)"}, "grams": 210}]
+  },
+  {
+    "id": "rice_white", "name": {"en": "White rice (dry)", "uk": "Рис білий (сухий)"}, "category": "grains",
+    "per100g": {"kcal": 365, "protein": 7.1, "fat": 0.7, "carbs": 80},
+    "packGrams": 1000, "packPriceUAH": 70,
+    "units": [{"name": {"en": "cup (250 ml)", "uk": "склянка (250 мл)"}, "grams": 200}]
+  },
+  {
+    "id": "pasta", "name": {"en": "Pasta (dry)", "uk": "Макарони (сухі)"}, "category": "grains",
+    "per100g": {"kcal": 371, "protein": 13, "fat": 1.5, "carbs": 75},
+    "packGrams": 400, "packPriceUAH": 40,
+    "units": [{"name": {"en": "pack", "uk": "пачка"}, "grams": 400}]
+  },
+  {
+    "id": "oats", "name": {"en": "Rolled oats", "uk": "Вівсяні пластівці"}, "category": "grains",
+    "per100g": {"kcal": 379, "protein": 13.2, "fat": 6.5, "carbs": 67.7},
+    "packGrams": 500, "packPriceUAH": 35,
+    "units": [{"name": {"en": "cup (250 ml)", "uk": "склянка (250 мл)"}, "grams": 90}]
+  },
+  {
+    "id": "milk", "name": {"en": "Milk 2.5%", "uk": "Молоко 2.5%"}, "category": "dairyEggs",
+    "per100g": {"kcal": 52, "protein": 2.9, "fat": 2.5, "carbs": 4.7},
+    "packGrams": 900, "packPriceUAH": 45,
+    "units": [{"name": {"en": "cup (250 ml)", "uk": "склянка (250 мл)"}, "grams": 250}]
+  },
+  {
+    "id": "cottage_cheese", "name": {"en": "Cottage cheese 5%", "uk": "Сир кисломолочний 5%"}, "category": "dairyEggs",
+    "per100g": {"kcal": 121, "protein": 17, "fat": 5, "carbs": 1.8},
+    "packGrams": 300, "packPriceUAH": 60,
+    "units": [{"name": {"en": "pack", "uk": "пачка"}, "grams": 300}]
+  },
+  {
+    "id": "hard_cheese", "name": {"en": "Hard cheese", "uk": "Сир твердий"}, "category": "dairyEggs",
+    "per100g": {"kcal": 356, "protein": 24.9, "fat": 27.4, "carbs": 2.2},
+    "packGrams": 200, "packPriceUAH": 90,
+    "units": []
+  },
+  {
+    "id": "sunflower_oil", "name": {"en": "Sunflower oil", "uk": "Олія соняшникова"}, "category": "oilsSpices",
+    "per100g": {"kcal": 884, "protein": 0, "fat": 100, "carbs": 0},
+    "packGrams": 780, "packPriceUAH": 75,
+    "units": [{"name": {"en": "tbsp", "uk": "ст. л."}, "grams": 13}, {"name": {"en": "tsp", "uk": "ч. л."}, "grams": 4.5}]
+  },
+  {
+    "id": "salt", "name": {"en": "Salt", "uk": "Сіль"}, "category": "oilsSpices",
+    "per100g": {"kcal": 0, "protein": 0, "fat": 0, "carbs": 0},
+    "packGrams": 1000, "packPriceUAH": 15,
+    "units": [{"name": {"en": "tsp", "uk": "ч. л."}, "grams": 6}]
+  },
+  {
+    "id": "onion", "name": {"en": "Onion", "uk": "Цибуля ріпчаста"}, "category": "vegetables",
+    "per100g": {"kcal": 40, "protein": 1.1, "fat": 0.1, "carbs": 9.3},
+    "packGrams": 1000, "packPriceUAH": 25,
+    "units": [{"name": {"en": "onion", "uk": "цибулина"}, "grams": 100}]
+  },
+  {
+    "id": "frozen_veg_mix", "name": {"en": "Frozen vegetable mix", "uk": "Овочева суміш заморожена"}, "category": "vegetables",
+    "per100g": {"kcal": 65, "protein": 2.6, "fat": 0.5, "carbs": 13},
+    "packGrams": 400, "packPriceUAH": 60,
+    "units": [{"name": {"en": "pack", "uk": "пачка"}, "grams": 400}]
+  },
+  {
+    "id": "banana", "name": {"en": "Banana", "uk": "Банан"}, "category": "fruits",
+    "per100g": {"kcal": 89, "protein": 1.1, "fat": 0.3, "carbs": 22.8},
+    "packGrams": 1000, "packPriceUAH": 65,
+    "units": [{"name": {"en": "banana", "uk": "банан"}, "grams": 120}]
+  },
+  {
+    "id": "bread", "name": {"en": "Bread", "uk": "Хліб"}, "category": "bakery",
+    "per100g": {"kcal": 265, "protein": 9, "fat": 3.2, "carbs": 49},
+    "packGrams": 500, "packPriceUAH": 35,
+    "units": [{"name": {"en": "slice", "uk": "скибка"}, "grams": 30}]
+  }
+]

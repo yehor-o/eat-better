@@ -1,0 +1,6 @@
+// Shared build settings. Personal signing values live in Private/Signing.xcconfig
+// (git-ignored); copy Config/Signing.example.xcconfig there and fill it in.
+PRODUCT_BUNDLE_IDENTIFIER = com.example.eatbetter
+DEVELOPMENT_TEAM =
+
+#include? "../Private/Signing.xcconfig"

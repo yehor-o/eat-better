@@ -1,0 +1,86 @@
+/* Tabs and titles */
+"Today" = "Сьогодні";
+"Recipes" = "Рецепти";
+"Fridge" = "Холодильник";
+"Plan" = "План";
+"Settings" = "Налаштування";
+
+/* Units */
+"kcal" = "ккал";
+"g" = "г";
+"(optional)" = "(за бажанням)";
+
+/* Nutrition */
+"Calories" = "Калорії";
+"Protein" = "Білки";
+"Fat" = "Жири";
+"Carbs" = "Вуглеводи";
+
+/* Today */
+"What should I eat now?" = "Що мені зараз з'їсти?";
+"Set up your profile in Settings to see daily targets." = "Заповни профіль у Налаштуваннях, щоб бачити денну норму.";
+"Ready in the fridge" = "Готове в холодильнику";
+"Eat by %@" = "З'їсти до %@";
+"Ate it" = "З'їв";
+"Eaten today" = "З'їдено сьогодні";
+"Nothing logged yet." = "Ще нічого не записано.";
+
+/* Recipes */
+"Could not load recipes" = "Не вдалося завантажити рецепти";
+"Can cook now" = "Можна приготувати зараз";
+"Tick what you have in the Fridge tab." = "Познач, що в тебе є, у вкладці «Холодильник».";
+"Missing 1–2 ingredients" = "Бракує 1–2 інгредієнтів";
+"Buy: %@ · ~%lld ₴" = "Купити: %@ · ~%lld ₴";
+"All recipes" = "Усі рецепти";
+"%lld kcal · %lld g protein · %lld min" = "%lld ккал · %lld г білка · %lld хв";
+"%lld servings · %lld min" = "Порцій: %lld · %lld хв";
+"Per serving" = "На порцію";
+"Ingredients" = "Інгредієнти";
+"Steps" = "Кроки";
+"%lld min" = "%lld хв";
+"Log 1 serving as eaten" = "Записати 1 порцію як з'їдену";
+"Logged." = "Записано.";
+
+/* Meal types */
+"Breakfast" = "Сніданок";
+"Lunch" = "Обід";
+"Dinner" = "Вечеря";
+"Snack" = "Перекус";
+
+/* Ingredient categories */
+"Meat & fish" = "М'ясо та риба";
+"Dairy & eggs" = "Молочне та яйця";
+"Grains & pasta" = "Крупи та макарони";
+"Vegetables" = "Овочі";
+"Fruits" = "Фрукти";
+"Bakery" = "Хліб";
+"Oils & spices" = "Олії та спеції";
+"Canned" = "Консерви";
+"Other" = "Інше";
+
+/* Plan */
+"Coming next" = "Скоро";
+"Batch-cooking plan and shopping list will live here." = "Тут буде план готування наперед і список покупок.";
+
+/* Settings */
+"Set up profile" = "Заповнити профіль";
+"Profile" = "Профіль";
+"Weight: %.1f kg" = "Вага: %.1f кг";
+"Height: %lld cm" = "Зріст: %lld см";
+"Age: %lld" = "Вік: %lld";
+"Sex" = "Стать";
+"Male" = "Чоловіча";
+"Female" = "Жіноча";
+"Activity" = "Активність";
+"Sedentary" = "Сидячий спосіб життя";
+"Light" = "Легка";
+"Moderate" = "Помірна";
+"Active" = "Висока";
+"Goal" = "Мета";
+"Gain weight" = "Набір маси";
+"Maintain" = "Підтримка";
+"Cooked food keeps: %lld days" = "Готова їжа зберігається: %lld дн.";
+"Daily targets" = "Денна норма";
+"Data" = "Дані";
+"Demo set" = "Демо-набір";
+"Private file" = "Приватний файл";

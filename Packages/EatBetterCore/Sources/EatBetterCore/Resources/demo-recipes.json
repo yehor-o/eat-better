@@ -1,0 +1,101 @@
+[
+  {
+    "id": "demo_oatmeal_banana",
+    "name": {"en": "Oatmeal with milk and banana", "uk": "Вівсянка на молоці з бананом"},
+    "mealTypes": ["breakfast"], "servings": 1, "totalMinutes": 10,
+    "ingredients": [
+      {"ingredient": "oats", "grams": 80},
+      {"ingredient": "milk", "grams": 250},
+      {"ingredient": "banana", "grams": 120},
+      {"ingredient": "salt", "grams": 1, "optional": true}
+    ],
+    "steps": [
+      {"text": {"en": "Bring the milk to a simmer in a small pot.", "uk": "Доведи молоко майже до кипіння в невеликій каструлі."}},
+      {"text": {"en": "Add the oats and a pinch of salt, cook stirring.", "uk": "Додай пластівці і дрібку солі, вари, помішуючи."}, "timerMinutes": 5},
+      {"text": {"en": "Slice the banana on top.", "uk": "Наріж банан зверху."}}
+    ]
+  },
+  {
+    "id": "demo_eggs_toast",
+    "name": {"en": "Scrambled eggs on toast", "uk": "Яєчня-бовтанка на тостах"},
+    "mealTypes": ["breakfast", "snack"], "servings": 1, "totalMinutes": 10,
+    "ingredients": [
+      {"ingredient": "egg", "grams": 150},
+      {"ingredient": "bread", "grams": 60},
+      {"ingredient": "sunflower_oil", "grams": 5},
+      {"ingredient": "salt", "grams": 1, "optional": true}
+    ],
+    "steps": [
+      {"text": {"en": "Toast the bread in the toaster.", "uk": "Підсуши хліб у тостері."}},
+      {"text": {"en": "Beat the eggs with salt, cook in oiled pan on medium heat, stirring.", "uk": "Збий яйця з сіллю, смаж на змащеній олією пательні на середньому вогні, помішуючи."}, "timerMinutes": 3},
+      {"text": {"en": "Serve on the toast.", "uk": "Виклади на тости."}}
+    ]
+  },
+  {
+    "id": "demo_chicken_buckwheat",
+    "name": {"en": "Baked chicken with buckwheat (3 portions)", "uk": "Запечене куряче філе з гречкою (3 порції)"},
+    "mealTypes": ["lunch", "dinner"], "servings": 3, "totalMinutes": 45, "storageDays": 4,
+    "ingredients": [
+      {"ingredient": "chicken_breast", "grams": 600},
+      {"ingredient": "buckwheat", "grams": 240},
+      {"ingredient": "onion", "grams": 100},
+      {"ingredient": "sunflower_oil", "grams": 26},
+      {"ingredient": "salt", "grams": 6, "optional": true}
+    ],
+    "steps": [
+      {"text": {"en": "Heat the oven to 200 °C.", "uk": "Розігрій духовку до 200 °C."}},
+      {"text": {"en": "Rub the chicken with oil and salt, put on a baking tray.", "uk": "Натри філе олією і сіллю, виклади на деко."}},
+      {"text": {"en": "Bake the chicken.", "uk": "Запікай філе."}, "timerMinutes": 25},
+      {"text": {"en": "Meanwhile rinse the buckwheat, cover with twice as much water, salt, simmer covered.", "uk": "Тим часом промий гречку, залий удвічі більшою кількістю води, посоли, вари під кришкою."}, "timerMinutes": 20},
+      {"text": {"en": "Fry the chopped onion and mix it into the buckwheat.", "uk": "Обсмаж нарізану цибулю і вмішай у гречку."}},
+      {"text": {"en": "Slice the chicken, divide everything into 3 containers.", "uk": "Наріж філе, розклади все на 3 контейнери."}}
+    ]
+  },
+  {
+    "id": "demo_pasta_tuna",
+    "name": {"en": "Pasta with tuna and cheese", "uk": "Макарони з тунцем і сиром"},
+    "mealTypes": ["lunch", "dinner"], "servings": 2, "totalMinutes": 20, "storageDays": 3,
+    "ingredients": [
+      {"ingredient": "pasta", "grams": 200},
+      {"ingredient": "tuna_canned", "grams": 185},
+      {"ingredient": "hard_cheese", "grams": 40},
+      {"ingredient": "sunflower_oil", "grams": 13},
+      {"ingredient": "salt", "grams": 6, "optional": true}
+    ],
+    "steps": [
+      {"text": {"en": "Boil 2 litres of salted water and cook the pasta.", "uk": "Закип'яти 2 л підсоленої води і звари макарони."}, "timerMinutes": 10},
+      {"text": {"en": "Drain, mix with the tuna and oil.", "uk": "Злий воду, змішай з тунцем і олією."}},
+      {"text": {"en": "Grate the cheese on top.", "uk": "Натри сир зверху."}}
+    ]
+  },
+  {
+    "id": "demo_rice_chicken_veg",
+    "name": {"en": "Rice with chicken and vegetables", "uk": "Рис з куркою та овочами"},
+    "mealTypes": ["lunch", "dinner"], "servings": 3, "totalMinutes": 35, "storageDays": 4,
+    "ingredients": [
+      {"ingredient": "rice_white", "grams": 240},
+      {"ingredient": "chicken_breast", "grams": 450},
+      {"ingredient": "frozen_veg_mix", "grams": 400},
+      {"ingredient": "sunflower_oil", "grams": 26},
+      {"ingredient": "salt", "grams": 6, "optional": true}
+    ],
+    "steps": [
+      {"text": {"en": "Rinse the rice, cover with 1.5× water, salt and simmer covered.", "uk": "Промий рис, залий 1.5 об'єму води, посоли і вари під кришкою."}, "timerMinutes": 18},
+      {"text": {"en": "Cut the chicken into cubes and fry in oil.", "uk": "Наріж філе кубиками і обсмаж на олії."}, "timerMinutes": 8},
+      {"text": {"en": "Add the frozen vegetables, cook until soft.", "uk": "Додай заморожені овочі, тушкуй до м'якості."}, "timerMinutes": 7},
+      {"text": {"en": "Mix with the rice and divide into 3 containers.", "uk": "Змішай з рисом і розклади на 3 контейнери."}}
+    ]
+  },
+  {
+    "id": "demo_cottage_banana",
+    "name": {"en": "Cottage cheese with banana", "uk": "Сир кисломолочний з бананом"},
+    "mealTypes": ["snack", "breakfast"], "servings": 1, "totalMinutes": 3,
+    "ingredients": [
+      {"ingredient": "cottage_cheese", "grams": 200},
+      {"ingredient": "banana", "grams": 120}
+    ],
+    "steps": [
+      {"text": {"en": "Mash the banana with a fork and mix with the cottage cheese.", "uk": "Розімни банан виделкою і змішай з сиром."}}
+    ]
+  }
+]

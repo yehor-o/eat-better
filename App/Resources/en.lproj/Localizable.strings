@@ -1,0 +1,3 @@
+/* English is the development language: keys are the English text, so this file only overrides units. */
+"kcal" = "kcal";
+"g" = "g";

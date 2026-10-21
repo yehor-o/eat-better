@@ -1,0 +1,5 @@
+// Copy to Private/Signing.xcconfig (git-ignored) and fill in.
+// Team ID: Xcode → Settings → Accounts → your Apple ID → Personal Team.
+// Bundle id must be unique for a free account, e.g. com.<yourname>.eatbetter.
+DEVELOPMENT_TEAM = ABCDE12345
+PRODUCT_BUNDLE_IDENTIFIER = com.yourname.eatbetter
