@@ -64,6 +64,17 @@ extension Goal {
     }
 }
 
+extension Catalog {
+    /// "150 g · ≈ 3 × egg"; grams only when the ingredient has no household units.
+    func amountText(ingredientID: String, grams: Double) -> String {
+        let base = "\(Int(grams.rounded())) \(String(localized: "g"))"
+        guard let household = householdAmount(ingredientID: ingredientID, grams: grams) else { return base }
+        let count = household.count.formatted(.number.precision(.fractionLength(0...1)))
+        // Unit names may carry their own brackets ("cup (250 ml)"), so no brackets around this part.
+        return "\(base) · ≈ \(count) × \(household.unit.name.current)"
+    }
+}
+
 /// Calories and macros, optionally against a target.
 struct NutritionRows: View {
     let value: Nutrition

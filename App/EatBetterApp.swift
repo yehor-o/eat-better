@@ -1,9 +1,14 @@
 import SwiftData
 import SwiftUI
+import UserNotifications
 
 @main
 struct EatBetterApp: App {
     @State private var catalogStore = CatalogStore()
+
+    init() {
+        UNUserNotificationCenter.current().delegate = TimerNotificationDelegate.shared
+    }
 
     var body: some Scene {
         WindowGroup {

@@ -10,12 +10,15 @@ struct RecipeDetailView: View {
     @Query private var profiles: [ProfileRecord]
     @State private var loggedAt: Date?
     @State private var cookedAt: Date?
+    @State private var isCooking = false
 
     var body: some View {
         List {
             Section {
                 Text("^[\(recipe.servings) serving](inflect: true) · \(recipe.totalMinutes) min")
                     .foregroundStyle(.secondary)
+                Button("Start cooking", systemImage: "play.circle.fill") { isCooking = true }
+                    .font(.headline)
             }
 
             Section("Per serving") {
@@ -26,7 +29,7 @@ struct RecipeDetailView: View {
                 ForEach(recipe.ingredients, id: \.ingredientID) { item in
                     if let ingredient = catalog.ingredient(item.ingredientID) {
                         LabeledContent {
-                            Text(verbatim: amountText(item))
+                            Text(verbatim: catalog.amountText(ingredientID: item.ingredientID, grams: item.grams))
                         } label: {
                             Text(verbatim: ingredient.name.current + (item.optional ? " " + String(localized: "(optional)") : ""))
                         }
@@ -56,7 +59,6 @@ struct RecipeDetailView: View {
             }
 
             Section {
-                // TODO(T-012): cooking mode with timers and scaling.
                 // The confirmation lives in the button itself: a row below it would sit under the tab bar.
                 Button {
                     context.insert(MealLogEntry(
@@ -95,15 +97,8 @@ struct RecipeDetailView: View {
         }
         .navigationTitle(recipe.name.current)
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func amountText(_ item: RecipeIngredient) -> String {
-        let grams = "\(Int(item.grams.rounded())) \(String(localized: "g"))"
-        guard let household = catalog.householdAmount(ingredientID: item.ingredientID, grams: item.grams) else {
-            return grams
+        .fullScreenCover(isPresented: $isCooking) {
+            CookingModeView(recipe: recipe, catalog: catalog)
         }
-        let count = household.count.formatted(.number.precision(.fractionLength(0...1)))
-        // Unit names may carry their own brackets ("cup (250 ml)"), so no brackets around this part.
-        return "\(grams) · ≈ \(count) × \(household.unit.name.current)"
     }
 }

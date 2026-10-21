@@ -15,13 +15,13 @@ struct ShoppingListView: View {
         let boughtIDs = Set(bought.map(\.ingredientID))
         let toFridge = plan.list.items.filter { boughtIDs.contains($0.ingredient.id) }
         List {
-            if plan.list.items.isEmpty {
+            if plan.list.items.isEmpty && plan.products.isEmpty {
                 Text("Nothing to buy: everything for the plan is in the fridge.")
                     .foregroundStyle(.secondary)
             } else {
                 Section {
                     LabeledContent("Total, approximately") {
-                        Text(verbatim: "~\(Int(plan.list.totalUAH.rounded())) ₴").bold()
+                        Text(verbatim: "~\(Int(plan.totalUAH.rounded())) ₴").bold()
                     }
                 }
                 ForEach(IngredientCategory.allCases, id: \.self) { category in
@@ -36,11 +36,31 @@ struct ShoppingListView: View {
                 }
             }
 
+            if !plan.products.isEmpty {
+                Section {
+                    ForEach(plan.products, id: \.product.id) { purchase in
+                        LabeledContent {
+                            if let cost = purchase.costUAH {
+                                Text(verbatim: "~\(Int(cost.rounded())) ₴")
+                            } else {
+                                Text("no price")
+                            }
+                        } label: {
+                            Text(verbatim: "\(purchase.product.name) × \(purchase.count)")
+                        }
+                    }
+                } header: {
+                    Text("My products")
+                } footer: {
+                    Text("Snacks from My products. Add a pack price in My products to count them in the total.")
+                }
+            }
+
             if !plan.checkAtHome.isEmpty {
                 Section {
                     ForEach(plan.checkAtHome, id: \.ingredient.id) { entry in
                         LabeledContent(entry.ingredient.name.current) {
-                            Text(verbatim: amountText(entry.ingredient, grams: entry.grams))
+                            Text(verbatim: catalog.amountText(ingredientID: entry.ingredient.id, grams: entry.grams))
                         }
                     }
                 } header: {
@@ -87,13 +107,6 @@ struct ShoppingListView: View {
             }
         }
         .tint(.primary)
-    }
-
-    private func amountText(_ ingredient: Ingredient, grams: Double) -> String {
-        let base = "\(Int(grams.rounded())) \(String(localized: "g"))"
-        guard let household = catalog.householdAmount(ingredientID: ingredient.id, grams: grams) else { return base }
-        let count = household.count.formatted(.number.precision(.fractionLength(0...1)))
-        return "\(base) · ≈ \(count) × \(household.unit.name.current)"
     }
 
     private func toggle(_ id: String, isBought: Bool) {

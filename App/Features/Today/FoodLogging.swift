@@ -190,12 +190,18 @@ struct MyProductForm: View {
     @State private var fat: Double?
     @State private var carbs: Double?
     @State private var packGrams: Double?
+    @State private var packPrice: Double?
 
     var body: some View {
         Form {
-            Section("Product") {
+            Section {
                 TextField("Name, e.g. Greek yogurt 2%", text: $name)
                 NumberField("Pack weight, g", value: $packGrams)
+                NumberField("Pack price, ₴", value: $packPrice)
+            } header: {
+                Text("Product")
+            } footer: {
+                Text("The price is optional. The plan uses it for snacks on the shopping list.")
             }
             Section {
                 NumberField("Calories, kcal", value: $kcal)
@@ -220,6 +226,7 @@ struct MyProductForm: View {
             fat = product.fat
             carbs = product.carbs
             packGrams = product.packGrams > 0 ? product.packGrams : nil
+            packPrice = product.packPriceUAH
         }
     }
 
@@ -230,17 +237,20 @@ struct MyProductForm: View {
             product.name = trimmed
             product.per100g = per100g
             product.packGrams = packGrams ?? 0
+            product.packPriceUAH = packPrice
         } else {
-            context.insert(MyProduct(name: trimmed, per100g: per100g, packGrams: packGrams ?? 0))
+            context.insert(MyProduct(name: trimmed, per100g: per100g, packGrams: packGrams ?? 0, packPriceUAH: packPrice))
         }
         dismiss()
     }
 }
 
-/// A labelled decimal input.
+/// A labelled decimal input. The value follows every keystroke (a format-based TextField only
+/// commits when it loses focus, so tapping Save with the keyboard up used the old number).
 struct NumberField: View {
     let title: LocalizedStringKey
     @Binding var value: Double?
+    @State private var text = ""
 
     init(_ title: LocalizedStringKey, value: Binding<Double?>) {
         self.title = title
@@ -249,9 +259,26 @@ struct NumberField: View {
 
     var body: some View {
         LabeledContent(title) {
-            TextField(title, value: $value, format: .number, prompt: Text(verbatim: "0"))
+            TextField(title, text: $text, prompt: Text(verbatim: "0"))
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
         }
+        .onAppear { text = Self.format(value) }
+        .onChange(of: value) { _, new in
+            if Self.parse(text) != new { text = Self.format(new) }
+        }
+        .onChange(of: text) { _, new in
+            let parsed = Self.parse(new)
+            if parsed != value { value = parsed }
+        }
+    }
+
+    /// Accepts both "12,5" and "12.5", whatever the region.
+    static func parse(_ text: String) -> Double? {
+        Double(text.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: ",", with: "."))
+    }
+
+    static func format(_ value: Double?) -> String {
+        value.map { $0.formatted(.number.precision(.fractionLength(0...2)).grouping(.never)) } ?? ""
     }
 }

@@ -7,11 +7,13 @@ struct FridgeView: View {
     @Environment(CatalogStore.self) private var store
     @Environment(\.modelContext) private var context
     @Query private var pantry: [PantryItem]
+    @Query private var priceOverrides: [PriceOverride]
+    @State private var opened: Ingredient?
 
     var body: some View {
         NavigationStack {
             List {
-                if let catalog = store.catalog {
+                if let catalog = store.catalog, let priced = store.catalog(with: priceOverrides) {
                     let have = Set(pantry.map(\.ingredientID))
                     ForEach(IngredientCategory.allCases, id: \.self) { category in
                         let items = catalog.ingredients.values
@@ -20,10 +22,7 @@ struct FridgeView: View {
                         if !items.isEmpty {
                             Section {
                                 ForEach(items) { ingredient in
-                                    Toggle(ingredient.name.current, isOn: Binding(
-                                        get: { have.contains(ingredient.id) },
-                                        set: { setHave($0, ingredientID: ingredient.id) }
-                                    ))
+                                    row(ingredient, priced: priced.ingredient(ingredient.id) ?? ingredient, have: have.contains(ingredient.id))
                                 }
                             } header: {
                                 Text(category.title)
@@ -33,6 +32,28 @@ struct FridgeView: View {
                 }
             }
             .navigationTitle("Fridge")
+            .navigationDestination(item: $opened) { IngredientDetailView(ingredient: $0) }
+        }
+    }
+
+    /// Tap the name for the ingredient card; the switch is the have / don't have tick.
+    private func row(_ ingredient: Ingredient, priced: Ingredient, have: Bool) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: ingredient.name.current)
+                Text(verbatim: "\(Int(priced.packGrams.rounded())) \(String(localized: "g")) · ~\(Int(priced.packPriceUAH.rounded())) ₴")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+            .onTapGesture { opened = ingredient }
+            .accessibilityAddTraits(.isButton)
+            Toggle(ingredient.name.current, isOn: Binding(
+                get: { have },
+                set: { setHave($0, ingredientID: ingredient.id) }
+            ))
+            .labelsHidden()
         }
     }
 

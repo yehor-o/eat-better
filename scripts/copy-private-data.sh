@@ -7,7 +7,7 @@ set -eu
 DEST="${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
 mkdir -p "$DEST"
 
-for name in recipes ingredients dishes; do
+for name in recipes ingredients dishes prices; do
     src="${SRCROOT}/Private/${name}.json"
     if [ -f "$src" ]; then
         cp "$src" "$DEST/private-${name}.json"

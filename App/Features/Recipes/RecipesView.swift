@@ -10,7 +10,7 @@ struct RecipesView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if let catalog = store.catalog {
+                if let catalog = store.catalog(with: priceOverrides) {
                     list(catalog: catalog)
                 } else {
                     ContentUnavailableView(
@@ -25,8 +25,7 @@ struct RecipesView: View {
     }
 
     private func list(catalog: Catalog) -> some View {
-        let prices = Dictionary(priceOverrides.map { ($0.ingredientID, $0.packPriceUAH) }, uniquingKeysWith: { a, _ in a })
-        let matches = PantryMatcher.match(catalog: catalog, available: Set(pantry.map(\.ingredientID)), prices: prices)
+        let matches = PantryMatcher.match(catalog: catalog, available: Set(pantry.map(\.ingredientID)))
         return List {
             Section("Can cook now") {
                 if matches.canCookNow.isEmpty {

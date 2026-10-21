@@ -115,3 +115,30 @@ phone is a later task (T-020).
 Created on 2026-10-21 from the work so far and made the GitHub default, on the owner's request,
 once the app built and worked in the simulator (D-013) — before the first run on the iPhone.
 New work branches off `main` and is merged back when it works.
+
+### D-023 Local notifications for cooking timers only
+Narrows D-011. A cooking-mode step timer schedules one local notification with sound, so it is
+heard with the phone locked; permission is asked on the first timer. No other notifications,
+still no network. Closing cooking mode cancels its timers.
+
+### D-024 Snacks in the plan
+Every planned day gets a snack slot (between lunch and dinner). Auto-fill puts a snack there
+from recipes whose `mealTypes` include `snack` or from "My products" (one pack, or 100 g),
+choosing what best closes the day's calorie gap. A second snack (after dinner) is added only
+while the day is still more than 300 kcal below the target. Occasional dishes are never picked
+(D-020). My products count on the shopping list by pack, with their price when the owner set one.
+
+### D-025 Store prices live in Private/
+The repo is public and the owner's stores say where they live, so researched prices go to
+`Private/prices.json` (copied into the app at build time), never into the shared catalog, and
+store names stay out of git. Per ingredient the file holds an ordinary product's regular price
+(no promotions, no premium) in two large Kyiv chains, the higher of the two, recalculated to a
+common pack. The owner's own stores had no online price list on 2026-10-21, so two chains on an
+online grocery service stood in; the owner can correct any price on the phone (T-011).
+
+### D-026 Backup and import modes
+One JSON file with all personal data (spec #12). Import always asks first and offers two modes:
+"Replace everything" (the app becomes exactly like the file) and "Add to what is here" (nothing
+is removed, the phone wins on conflicts, identical log entries and portions are not doubled, so
+importing the same file twice changes nothing). Recipes are not in the backup: they come with
+the build from `Private/recipes.json`.

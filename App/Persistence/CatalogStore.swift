@@ -12,6 +12,8 @@ final class CatalogStore {
     /// Typical dishes for logging food cooked elsewhere (D-016), plus private ones if bundled.
     private(set) var dishes: [Food] = []
     private(set) var isUsingDemoRecipes = true
+    /// Ingredients whose pack and price come from the private price file (T-007).
+    private(set) var privatePriceCount = 0
     private(set) var loadError: String?
 
     init() {
@@ -32,15 +34,27 @@ final class CatalogStore {
                 recipes = try Catalog.demoRecipes()
                 isUsingDemoRecipes = true
             }
-            catalog = try Catalog(ingredients: ingredients, recipes: recipes)
+            var loaded = try Catalog(ingredients: ingredients, recipes: recipes)
+            if let url = Bundle.main.url(forResource: "private-prices", withExtension: "json") {
+                let packs = try JSONDecoder().decode([PackPrice].self, from: Data(contentsOf: url))
+                loaded = loaded.applying(packs)
+                privatePriceCount = packs.count
+            }
+            catalog = loaded
             dishes = try Catalog.bundledDishes()
             if let extra = Bundle.main.url(forResource: "private-dishes", withExtension: "json") {
                 dishes += try JSONDecoder().decode([Food].self, from: Data(contentsOf: extra))
             }
             loadError = nil
         } catch {
+            privatePriceCount = 0
             catalog = nil
             loadError = String(describing: error)
         }
+    }
+
+    /// The catalog with the owner's own prices and packs from this device on top.
+    func catalog(with overrides: [PriceOverride]) -> Catalog? {
+        catalog?.applying(overrides.map(\.packPrice))
     }
 }

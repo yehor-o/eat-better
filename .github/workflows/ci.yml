@@ -19,6 +19,8 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Ukrainian translations complete
+        run: python3 scripts/check-localization.py
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Generate project
