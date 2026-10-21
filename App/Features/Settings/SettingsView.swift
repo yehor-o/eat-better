@@ -168,7 +168,7 @@ private struct ProfileForm: View {
         .onChange(of: profile.defaultStorageDays) { context.saveNow() }
     }
 
-    /// Keeps the last valid value while the owner is still typing (e.g. "1" on the way to "183").
+    /// Keeps the last valid value while the owner is still typing (e.g. "1" on the way to "180").
     private func number(_ keyPath: ReferenceWritableKeyPath<ProfileRecord, Double>, in range: ClosedRange<Double>) -> Binding<Double?> {
         Binding(
             get: { profile[keyPath: keyPath] },
