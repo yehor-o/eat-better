@@ -79,6 +79,17 @@ private func bundledCatalog() throws -> Catalog {
         #expect(abs(catalog.totalNutrition(of: tripled).kcal - catalog.totalNutrition(of: recipe).kcal * 3) < 0.001)
     }
 
+    @Test func scalingToServingsKeepsAmountPerServing() throws {
+        let catalog = try bundledCatalog()
+        let recipe = try #require(catalog.recipes.first { $0.servings == 2 })
+        let five = recipe.scaled(toServings: 5)
+        #expect(five.servings == 5)
+        #expect(five.ingredients.map(\.grams) == recipe.ingredients.map { $0.grams * 2.5 })
+        let perServing = catalog.nutritionPerServing(of: recipe)
+        #expect(abs(catalog.nutritionPerServing(of: five).kcal - perServing.kcal) < 0.001)
+        #expect(recipe.scaled(toServings: 0).servings == 1)
+    }
+
     @Test func householdAmountUsesUnits() throws {
         let catalog = try bundledCatalog()
         let eggs = try #require(catalog.householdAmount(ingredientID: "egg", grams: 150))

@@ -47,7 +47,7 @@ struct TodayView: View {
                                     .buttonStyle(.bordered)
                             }
                             .swipeActions {
-                                Button("Delete", role: .destructive) { context.delete(portion) }
+                                Button("Delete", role: .destructive) { context.delete(portion); context.saveNow() }
                             }
                         }
                     }
@@ -64,6 +64,7 @@ struct TodayView: View {
                     }
                     .onDelete { offsets in
                         for index in offsets { context.delete(todayEntries[index]) }
+                        context.saveNow()
                     }
                 }
             }
@@ -91,5 +92,6 @@ struct TodayView: View {
     private func eat(_ portion: ReadyPortion) {
         context.insert(MealLogEntry(title: portion.title, recipeID: portion.recipeID, nutrition: portion.nutrition))
         context.delete(portion)
+        context.saveNow()
     }
 }

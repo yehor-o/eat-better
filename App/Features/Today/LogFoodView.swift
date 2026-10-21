@@ -85,6 +85,7 @@ struct LogFoodView: View {
                 ForEach(recent) { entry in
                     Button {
                         context.insert(MealLogEntry(title: entry.title, recipeID: entry.recipeID, nutrition: entry.nutrition))
+                        context.saveNow()
                         dismiss()
                     } label: {
                         LabeledContent {
@@ -107,7 +108,7 @@ struct LogFoodView: View {
                     Text(product.name)
                 }
                 .swipeActions {
-                    Button("Delete", role: .destructive) { context.delete(product) }
+                    Button("Delete", role: .destructive) { context.delete(product); context.saveNow() }
                     NavigationLink("Edit") { MyProductForm(product: product) }
                 }
             }

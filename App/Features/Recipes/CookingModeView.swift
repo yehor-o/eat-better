@@ -3,7 +3,8 @@ import SwiftData
 import SwiftUI
 import UIKit
 
-/// Cooking mode (spec #8): one step at a time in large text, amounts for ×1–×3, step timers.
+/// Cooking mode (spec #8): one step at a time in large text, amounts for the chosen number of
+/// portions, step timers.
 /// The screen stays on while it is open.
 struct CookingModeView: View {
     let recipe: Recipe
@@ -12,18 +13,19 @@ struct CookingModeView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query private var profiles: [ProfileRecord]
-    @State private var scale = 1
+    @Binding var portions: Int
     @State private var page = 0
     @State private var timers: CookingTimers
     @State private var isConfirmingClose = false
 
-    init(recipe: Recipe, catalog: Catalog) {
+    init(recipe: Recipe, catalog: Catalog, portions: Binding<Int>) {
         self.recipe = recipe
         self.catalog = catalog
+        _portions = portions
         _timers = State(initialValue: CookingTimers(recipeID: recipe.id))
     }
 
-    private var scaled: Recipe { recipe.scaled(by: Double(scale)) }
+    private var scaled: Recipe { recipe.scaled(toServings: portions) }
     private var lastPage: Int { recipe.steps.count + 1 }
 
     var body: some View {
@@ -73,11 +75,9 @@ struct CookingModeView: View {
     private var ingredientsPage: some View {
         List {
             Section {
-                Picker("Amount", selection: $scale) {
-                    ForEach(1...3, id: \.self) { Text(verbatim: "×\($0)").tag($0) }
-                }
-                .pickerStyle(.segmented)
-                Text("^[\(scaled.servings) serving](inflect: true) · \(recipe.totalMinutes) min")
+                PortionStepper(portions: $portions)
+                    .font(.title3)
+                Text("\(recipe.totalMinutes) min")
                     .foregroundStyle(.secondary)
             }
             Section {
@@ -229,13 +229,7 @@ struct CookingModeView: View {
         let perServing = catalog.nutritionPerServing(of: recipe)
         context.insert(MealLogEntry(title: recipe.name.current, recipeID: recipe.id, nutrition: perServing))
         if portions > 1 {
-            var rest = recipe
-            rest.servings = portions - 1
-            // Same per-serving amounts, one serving fewer.
-            rest.ingredients = scaled.ingredients.map {
-                RecipeIngredient(ingredientID: $0.ingredientID, grams: $0.grams * Double(portions - 1) / Double(portions), optional: $0.optional)
-            }
-            context.addCookedPortions(of: rest, catalog: catalog, defaultStorageDays: storageDays)
+            context.addCookedPortions(of: recipe.scaled(toServings: portions - 1), catalog: catalog, defaultStorageDays: storageDays)
         } else {
             context.saveNow()
         }

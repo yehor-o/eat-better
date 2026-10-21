@@ -7,7 +7,7 @@ _Last updated: 2026-10-21 (backup, snacks, store prices, price editing, cooking 
 `claude/backup-snacks-prices-cooking` (pushed, **not merged** — the owner merges after a look).
 Checked in the simulator, not yet run on the iPhone.
 
-- **Core** (`Packages/EatBetterCore`, 47 tests): daily targets, recipe nutrition / scaling /
+- **Core** (`Packages/EatBetterCore`, 48 tests): daily targets, recipe nutrition / scaling /
   household measures, fridge matching, shopping list, `Food`, `ClaudeFoodCode`, `MealSuggester`,
   `MealPlanner` (+ snacks and My products, D-024), `PackPrice` / `Catalog.applying` (D-025),
   `Backup` (file format and "add" merge, D-026).
@@ -17,7 +17,8 @@ Checked in the simulator, not yet run on the iPhone.
   My products, plan and settings, without profile, food log and ready portions.
 - **App**:
   - Today: "What should I eat now?", "Log food", ready portions, day totals.
-  - Recipes: detail with "Start cooking" at the top → cooking mode: ×1/×2/×3, one step per page
+  - Recipes: detail starts with "Portions: N" (1–12; the ingredient amounts follow it),
+    "Start cooking" and "Cooked: N portions to Ready". Cooking mode: same portion count, one step per page
     in large text, step timers with a local notification (D-023), the screen stays on, "Cooked"
     adds servings × scale portions or "Eat 1 now, the rest to Ready".
   - Fridge: tap a name → ingredient card with nutrition, measures, catalog price and the owner's

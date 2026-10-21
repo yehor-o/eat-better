@@ -64,5 +64,6 @@ struct FridgeView: View {
         } else {
             existing.forEach { context.delete($0) }
         }
+        context.saveNow()
     }
 }

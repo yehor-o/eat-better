@@ -241,6 +241,7 @@ struct MyProductForm: View {
         } else {
             context.insert(MyProduct(name: trimmed, per100g: per100g, packGrams: packGrams ?? 0, packPriceUAH: packPrice))
         }
+        context.saveNow()
         dismiss()
     }
 }

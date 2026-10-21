@@ -39,6 +39,9 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Numbers refer to [SPEC.md
       strings — spec #13
 - [x] T-017 UI nits from the first simulator run
 - [x] T-018 In-app language switch (D-015)
+- [x] T-023 Recipe: choose how many portions to cook (1–12); ingredients follow it, "Cooked"
+      puts that many portions into Ready, cooking mode starts with the same number
+- [x] T-024 Save right away after eating, logging, fridge and shopping ticks, My products (D-019)
 - [x] T-019 Snack slot in the plan: 1–2 snacks a day from snack recipes and My products (D-024)
 
 ## Later

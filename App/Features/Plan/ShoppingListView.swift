@@ -115,6 +115,7 @@ struct ShoppingListView: View {
         } else {
             context.insert(BoughtItem(ingredientID: id))
         }
+        context.saveNow()
     }
 
     /// Only on the owner's tap (D-006, D-017).

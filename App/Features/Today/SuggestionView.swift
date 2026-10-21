@@ -75,6 +75,7 @@ struct SuggestionView: View {
                         if let portion = readyPortion(id: id) {
                             context.insert(MealLogEntry(title: portion.title, recipeID: portion.recipeID, nutrition: portion.nutrition))
                             context.delete(portion)
+                            context.saveNow()
                         }
                         dismiss()
                     }
