@@ -14,8 +14,8 @@ not exist yet; the first merge creates it).
 - **App** (`App/`): tab bar; Recipes list grouped by fridge match + detail with nutrition,
   household measures and "log 1 serving"; Fridge checklist; Today with day totals vs targets,
   ready portions and today's log; Settings with profile and targets; Plan is a placeholder.
-- **Not yet compiled on a Mac.** The app was written in a Linux cloud session; CI (macOS) is the
-  first compile. Expect small fixes in T-006.
+- **Builds in CI** (macOS runner, Xcode 26.6, simulator, no signing). Not yet run on a device or
+  simulator — UI behaviour is unverified until T-006.
 
 ## Next step
 T-006: owner switches to a local Claude Code session on the Mac, builds and runs on the iPhone.
