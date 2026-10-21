@@ -110,3 +110,8 @@ The owner asks in a Claude Code session; the recipe is added to `Private/recipes
 app is rebuilt (it has to be re-signed weekly anyway). Pasting a recipe from the Claude app on the
 phone is a later task (T-020).
 
+
+### D-022 `main` is the default branch
+Created on 2026-10-21 from the work so far and made the GitHub default, on the owner's request,
+once the app built and worked in the simulator (D-013) — before the first run on the iPhone.
+New work branches off `main` and is merged back when it works.
