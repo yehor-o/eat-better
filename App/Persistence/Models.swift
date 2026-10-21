@@ -100,16 +100,107 @@ final class MealLogEntry {
     }
 }
 
-/// One cooked portion waiting in the fridge.
+/// One portion waiting in the fridge: home-cooked or brought from outside (D-016).
+/// Title and nutrition are stored, so outside food needs no recipe.
 @Model
 final class ReadyPortion {
-    var recipeID: String
+    var recipeID: String?
+    var title: String = ""
+    var kcal: Double = 0
+    var protein: Double = 0
+    var fat: Double = 0
+    var carbs: Double = 0
     var cookedAt: Date
     var expiresAt: Date
 
-    init(recipeID: String, cookedAt: Date = .now, expiresAt: Date) {
+    init(title: String, recipeID: String? = nil, nutrition: Nutrition, cookedAt: Date = .now, expiresAt: Date) {
+        self.title = title
         self.recipeID = recipeID
+        self.kcal = nutrition.kcal
+        self.protein = nutrition.protein
+        self.fat = nutrition.fat
+        self.carbs = nutrition.carbs
         self.cookedAt = cookedAt
         self.expiresAt = expiresAt
+    }
+
+    var nutrition: Nutrition {
+        Nutrition(kcal: kcal, protein: protein, fat: fat, carbs: carbs)
+    }
+}
+
+/// A packaged food or snack entered once from its label, then logged in one tap (D-016).
+@Model
+final class MyProduct {
+    var name: String
+    var kcal: Double
+    var protein: Double
+    var fat: Double
+    var carbs: Double
+    /// Pack weight in grams; 0 when the product is not sold in packs.
+    var packGrams: Double
+    var createdAt: Date
+
+    init(name: String, per100g: Nutrition, packGrams: Double) {
+        self.name = name
+        self.kcal = per100g.kcal
+        self.protein = per100g.protein
+        self.fat = per100g.fat
+        self.carbs = per100g.carbs
+        self.packGrams = packGrams
+        self.createdAt = .now
+    }
+
+    var per100g: Nutrition {
+        get { Nutrition(kcal: kcal, protein: protein, fat: fat, carbs: carbs) }
+        set {
+            kcal = newValue.kcal
+            protein = newValue.protein
+            fat = newValue.fat
+            carbs = newValue.carbs
+        }
+    }
+
+    var food: Food {
+        let pack = packGrams > 0 ? [HouseholdUnit(name: LocalizedText(en: "pack", uk: "упаковка"), grams: packGrams)] : []
+        return Food(id: "my-\(createdAt.timeIntervalSince1970)", name: LocalizedText(en: name, uk: name), per100g: per100g, units: pack)
+    }
+}
+
+/// One meal of the shopping-trip plan (D-017). Auto-fill rewrites entries unless the owner set
+/// them by hand or the dish was already cooked.
+@Model
+final class PlanEntry {
+    /// Start of the day.
+    var day: Date
+    var mealRaw: String
+    var recipeID: String?
+    var isOutside: Bool
+    var isManual: Bool
+    var cookedAt: Date?
+
+    init(day: Date, meal: MealType, recipeID: String?, isOutside: Bool = false, isManual: Bool) {
+        self.day = day
+        self.mealRaw = meal.rawValue
+        self.recipeID = recipeID
+        self.isOutside = isOutside
+        self.isManual = isManual
+    }
+
+    var meal: MealType { MealType(rawValue: mealRaw) ?? .lunch }
+
+    var fill: SlotFill? {
+        if isOutside { return .outside }
+        return recipeID.map(SlotFill.recipe)
+    }
+}
+
+/// Ticked on the shopping list while in the store; moved into the fridge on the owner's tap.
+@Model
+final class BoughtItem {
+    @Attribute(.unique) var ingredientID: String
+
+    init(ingredientID: String) {
+        self.ingredientID = ingredientID
     }
 }

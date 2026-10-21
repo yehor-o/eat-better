@@ -43,13 +43,14 @@ App/                      SwiftUI app (iOS 18+)
   Shared/                 small view helpers, localized titles
   Resources/*.lproj/      Localizable.strings (en, uk)
 Packages/EatBetterCore/   pure-Swift logic, no UI, builds and tests on Linux and macOS
-  Sources/EatBetterCore/  models, DailyTargets, RecipeMath, PantryMatcher, ShoppingPlanner
-  Sources/.../Resources/  ingredients.json (shared), demo-recipes.json
+  Sources/EatBetterCore/  models, DailyTargets, RecipeMath, PantryMatcher, ShoppingPlanner,
+                          Food, ClaudeFoodCode, MealSuggester, MealPlanner
+  Sources/.../Resources/  ingredients.json (shared), demo-recipes.json, dishes.json
   Tests/                  Swift Testing suites
 Config/                   xcconfig; signing comes from Private/Signing.xcconfig
 scripts/                  copy-private-data.sh (Xcode build phase)
 docs/                     SPEC, PROJECT_STATE, DECISIONS, TASKS, DATA_FORMAT
-Private/                  git-ignored: recipes.json, ingredients.json, Signing.xcconfig, CONTEXT.md
+Private/                  git-ignored: recipes.json, ingredients.json, dishes.json, Signing.xcconfig, CONTEXT.md
 project.yml               XcodeGen definition (the .xcodeproj is generated, not committed)
 ```
 

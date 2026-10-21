@@ -30,7 +30,10 @@ struct RecipesView: View {
         return List {
             Section("Can cook now") {
                 if matches.canCookNow.isEmpty {
-                    Text("Tick what you have in the Fridge tab.").foregroundStyle(.secondary)
+                    Text(pantry.isEmpty
+                         ? LocalizedStringKey("Tick what you have in the Fridge tab.")
+                         : LocalizedStringKey("Nothing can be fully cooked from the fridge yet."))
+                        .foregroundStyle(.secondary)
                 }
                 ForEach(matches.canCookNow, id: \.recipe.id) { match in
                     NavigationLink(value: match.recipe.id) { RecipeRow(recipe: match.recipe, catalog: catalog) }

@@ -16,11 +16,17 @@ struct EatBetterApp: App {
             PriceOverride.self,
             MealLogEntry.self,
             ReadyPortion.self,
+            MyProduct.self,
+            PlanEntry.self,
+            BoughtItem.self,
         ])
     }
 }
 
 struct RootView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.modelContext) private var context
+
     var body: some View {
         TabView {
             Tab("Today", systemImage: "sun.max") { TodayView() }
@@ -28,6 +34,9 @@ struct RootView: View {
             Tab("Fridge", systemImage: "refrigerator") { FridgeView() }
             Tab("Plan", systemImage: "cart") { PlanView() }
             Tab("Settings", systemImage: "gearshape") { SettingsView() }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { context.saveNow() }
         }
     }
 }

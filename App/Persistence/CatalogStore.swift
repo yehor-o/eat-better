@@ -9,6 +9,8 @@ import Observation
 @Observable
 final class CatalogStore {
     private(set) var catalog: Catalog?
+    /// Typical dishes for logging food cooked elsewhere (D-016), plus private ones if bundled.
+    private(set) var dishes: [Food] = []
     private(set) var isUsingDemoRecipes = true
     private(set) var loadError: String?
 
@@ -31,6 +33,10 @@ final class CatalogStore {
                 isUsingDemoRecipes = true
             }
             catalog = try Catalog(ingredients: ingredients, recipes: recipes)
+            dishes = try Catalog.bundledDishes()
+            if let extra = Bundle.main.url(forResource: "private-dishes", withExtension: "json") {
+                dishes += try JSONDecoder().decode([Food].self, from: Data(contentsOf: extra))
+            }
             loadError = nil
         } catch {
             catalog = nil

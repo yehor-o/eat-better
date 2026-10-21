@@ -1,3 +1,6 @@
 /* English is the development language: keys are the English text, so this file only overrides units. */
 "kcal" = "kcal";
 "g" = "g";
+
+/* Long texts use a short key. */
+"claude.prompt" = "Estimate the calories and macros of the food in my photo or description. Reply with one line only, exactly in this format:\nEB1|name|kcal|protein g|fat g|carbs g|portions\nNumbers are for one portion that I eat. If it is a container for several meals, put the number of portions at the end, otherwise 1. Use a dot for decimals.";

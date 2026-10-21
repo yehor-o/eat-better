@@ -3,11 +3,12 @@ import SwiftData
 import SwiftUI
 
 struct TodayView: View {
-    @Environment(CatalogStore.self) private var store
     @Environment(\.modelContext) private var context
     @Query private var profiles: [ProfileRecord]
     @Query(sort: \MealLogEntry.date, order: .reverse) private var log: [MealLogEntry]
     @Query(sort: \ReadyPortion.expiresAt) private var portions: [ReadyPortion]
+    @State private var isLoggingFood = false
+    @State private var isSuggesting = false
 
     private var todayEntries: [MealLogEntry] {
         log.filter { Calendar.current.isDateInToday($0.date) }
@@ -17,9 +18,8 @@ struct TodayView: View {
         NavigationStack {
             List {
                 Section {
-                    // TODO(T-010): "What should I eat now?" suggestion engine.
-                    Button("What should I eat now?", systemImage: "sparkles") {}
-                        .disabled(true)
+                    Button("What should I eat now?", systemImage: "sparkles") { isSuggesting = true }
+                    Button("Log food", systemImage: "plus.circle") { isLoggingFood = true }
                 }
 
                 Section("Today") {
@@ -31,21 +31,23 @@ struct TodayView: View {
                     }
                 }
 
-                if !portions.isEmpty, let catalog = store.catalog {
+                if !portions.isEmpty {
                     Section("Ready in the fridge") {
-                        ForEach(portions) { portion in
-                            if let recipe = catalog.recipes.first(where: { $0.id == portion.recipeID }) {
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text(recipe.name.current)
-                                        Text("Eat by \(portion.expiresAt, format: .dateTime.day().month())")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    Spacer()
-                                    Button("Ate it") { eat(portion, recipe: recipe, catalog: catalog) }
-                                        .buttonStyle(.bordered)
+                        ForEach(portionGroups, id: \.first!.persistentModelID) { group in
+                            let portion = group[0]
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(group.count > 1 ? "\(portion.title) ×\(group.count)" : portion.title)
+                                    Text("Eat by \(portion.expiresAt, format: .dateTime.day().month())")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
                                 }
+                                Spacer()
+                                Button("Ate it") { eat(portion) }
+                                    .buttonStyle(.bordered)
+                            }
+                            .swipeActions {
+                                Button("Delete", role: .destructive) { context.delete(portion) }
                             }
                         }
                     }
@@ -66,15 +68,28 @@ struct TodayView: View {
                 }
             }
             .navigationTitle("Today")
+            .sheet(isPresented: $isLoggingFood) { LogFoodView() }
+            .sheet(isPresented: $isSuggesting) { SuggestionView() }
         }
     }
 
-    private func eat(_ portion: ReadyPortion, recipe: Recipe, catalog: Catalog) {
-        context.insert(MealLogEntry(
-            title: recipe.name.current,
-            recipeID: recipe.id,
-            nutrition: catalog.nutritionPerServing(of: recipe)
-        ))
+    /// Identical portions (same food, same eat-by day) shown as one row with a count.
+    private var portionGroups: [[ReadyPortion]] {
+        var groups: [[ReadyPortion]] = []
+        for portion in portions {
+            if let index = groups.firstIndex(where: {
+                $0[0].title == portion.title && Calendar.current.isDate($0[0].expiresAt, inSameDayAs: portion.expiresAt)
+            }) {
+                groups[index].append(portion)
+            } else {
+                groups.append([portion])
+            }
+        }
+        return groups
+    }
+
+    private func eat(_ portion: ReadyPortion) {
+        context.insert(MealLogEntry(title: portion.title, recipeID: portion.recipeID, nutrition: portion.nutrition))
         context.delete(portion)
     }
 }

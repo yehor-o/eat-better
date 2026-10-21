@@ -1,0 +1,573 @@
+[
+  {
+    "id": "borscht",
+    "name": {
+      "en": "Borscht with meat",
+      "uk": "Борщ з м'ясом"
+    },
+    "per100g": {
+      "kcal": 55,
+      "protein": 3,
+      "fat": 2.8,
+      "carbs": 4.8
+    },
+    "units": [
+      {
+        "name": {
+          "en": "bowl",
+          "uk": "тарілка"
+        },
+        "grams": 300
+      }
+    ]
+  },
+  {
+    "id": "chicken_soup",
+    "name": {
+      "en": "Chicken noodle soup",
+      "uk": "Курячий суп з локшиною"
+    },
+    "per100g": {
+      "kcal": 45,
+      "protein": 3.5,
+      "fat": 1.6,
+      "carbs": 4.2
+    },
+    "units": [
+      {
+        "name": {
+          "en": "bowl",
+          "uk": "тарілка"
+        },
+        "grams": 300
+      }
+    ]
+  },
+  {
+    "id": "mashed_potatoes",
+    "name": {
+      "en": "Mashed potatoes",
+      "uk": "Картопляне пюре"
+    },
+    "per100g": {
+      "kcal": 105,
+      "protein": 2.2,
+      "fat": 4,
+      "carbs": 15
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 200
+      }
+    ]
+  },
+  {
+    "id": "buckwheat_boiled",
+    "name": {
+      "en": "Buckwheat, cooked",
+      "uk": "Гречка варена"
+    },
+    "per100g": {
+      "kcal": 110,
+      "protein": 4.2,
+      "fat": 1.1,
+      "carbs": 21
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 200
+      }
+    ]
+  },
+  {
+    "id": "rice_boiled",
+    "name": {
+      "en": "Rice, cooked",
+      "uk": "Рис варений"
+    },
+    "per100g": {
+      "kcal": 130,
+      "protein": 2.7,
+      "fat": 0.3,
+      "carbs": 28
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 200
+      }
+    ]
+  },
+  {
+    "id": "pasta_boiled",
+    "name": {
+      "en": "Pasta, cooked",
+      "uk": "Макарони варені"
+    },
+    "per100g": {
+      "kcal": 150,
+      "protein": 5.5,
+      "fat": 1,
+      "carbs": 30
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 200
+      }
+    ]
+  },
+  {
+    "id": "cutlet",
+    "name": {
+      "en": "Meat cutlet, fried",
+      "uk": "Котлета м'ясна смажена"
+    },
+    "per100g": {
+      "kcal": 230,
+      "protein": 15,
+      "fat": 15,
+      "carbs": 9
+    },
+    "units": [
+      {
+        "name": {
+          "en": "cutlet",
+          "uk": "котлета"
+        },
+        "grams": 90
+      }
+    ]
+  },
+  {
+    "id": "chicken_baked",
+    "name": {
+      "en": "Chicken leg, baked",
+      "uk": "Куряча ніжка запечена"
+    },
+    "per100g": {
+      "kcal": 190,
+      "protein": 24,
+      "fat": 10.5,
+      "carbs": 0
+    },
+    "units": [
+      {
+        "name": {
+          "en": "piece",
+          "uk": "шматок"
+        },
+        "grams": 120
+      }
+    ]
+  },
+  {
+    "id": "fish_baked",
+    "name": {
+      "en": "Fish, baked",
+      "uk": "Риба запечена"
+    },
+    "per100g": {
+      "kcal": 140,
+      "protein": 20,
+      "fat": 6.5,
+      "carbs": 0.5
+    },
+    "units": [
+      {
+        "name": {
+          "en": "piece",
+          "uk": "шматок"
+        },
+        "grams": 150
+      }
+    ]
+  },
+  {
+    "id": "varenyky_potato",
+    "name": {
+      "en": "Varenyky with potato",
+      "uk": "Вареники з картоплею"
+    },
+    "per100g": {
+      "kcal": 150,
+      "protein": 4,
+      "fat": 3.5,
+      "carbs": 26
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 250
+      },
+      {
+        "name": {
+          "en": "varenyk",
+          "uk": "вареник"
+        },
+        "grams": 30
+      }
+    ]
+  },
+  {
+    "id": "varenyky_cottage",
+    "name": {
+      "en": "Varenyky with cottage cheese",
+      "uk": "Вареники з сиром"
+    },
+    "per100g": {
+      "kcal": 190,
+      "protein": 9,
+      "fat": 5,
+      "carbs": 27
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 250
+      },
+      {
+        "name": {
+          "en": "varenyk",
+          "uk": "вареник"
+        },
+        "grams": 30
+      }
+    ]
+  },
+  {
+    "id": "pelmeni",
+    "name": {
+      "en": "Pelmeni",
+      "uk": "Пельмені"
+    },
+    "per100g": {
+      "kcal": 240,
+      "protein": 11,
+      "fat": 12,
+      "carbs": 22
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 250
+      },
+      {
+        "name": {
+          "en": "piece",
+          "uk": "штука"
+        },
+        "grams": 12
+      }
+    ]
+  },
+  {
+    "id": "holubtsi",
+    "name": {
+      "en": "Holubtsi (cabbage rolls)",
+      "uk": "Голубці"
+    },
+    "per100g": {
+      "kcal": 110,
+      "protein": 6,
+      "fat": 5.5,
+      "carbs": 9.5
+    },
+    "units": [
+      {
+        "name": {
+          "en": "piece",
+          "uk": "штука"
+        },
+        "grams": 150
+      }
+    ]
+  },
+  {
+    "id": "plov_chicken",
+    "name": {
+      "en": "Plov with chicken",
+      "uk": "Плов з куркою"
+    },
+    "per100g": {
+      "kcal": 170,
+      "protein": 9,
+      "fat": 6.5,
+      "carbs": 19
+    },
+    "units": [
+      {
+        "name": {
+          "en": "plate",
+          "uk": "тарілка"
+        },
+        "grams": 300
+      }
+    ]
+  },
+  {
+    "id": "deruny",
+    "name": {
+      "en": "Potato pancakes (deruny)",
+      "uk": "Деруни"
+    },
+    "per100g": {
+      "kcal": 200,
+      "protein": 4,
+      "fat": 11,
+      "carbs": 22
+    },
+    "units": [
+      {
+        "name": {
+          "en": "piece",
+          "uk": "штука"
+        },
+        "grams": 70
+      }
+    ]
+  },
+  {
+    "id": "syrnyky",
+    "name": {
+      "en": "Syrnyky",
+      "uk": "Сирники"
+    },
+    "per100g": {
+      "kcal": 220,
+      "protein": 13,
+      "fat": 10,
+      "carbs": 20
+    },
+    "units": [
+      {
+        "name": {
+          "en": "piece",
+          "uk": "штука"
+        },
+        "grams": 60
+      }
+    ]
+  },
+  {
+    "id": "mlyntsi",
+    "name": {
+      "en": "Thin pancakes (mlyntsi)",
+      "uk": "Млинці"
+    },
+    "per100g": {
+      "kcal": 230,
+      "protein": 6,
+      "fat": 9,
+      "carbs": 30
+    },
+    "units": [
+      {
+        "name": {
+          "en": "piece",
+          "uk": "штука"
+        },
+        "grams": 50
+      }
+    ]
+  },
+  {
+    "id": "omelette",
+    "name": {
+      "en": "Omelette",
+      "uk": "Омлет"
+    },
+    "per100g": {
+      "kcal": 155,
+      "protein": 10,
+      "fat": 12,
+      "carbs": 2
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 150
+      }
+    ]
+  },
+  {
+    "id": "olivier",
+    "name": {
+      "en": "Olivier salad",
+      "uk": "Олів'є"
+    },
+    "per100g": {
+      "kcal": 190,
+      "protein": 5.5,
+      "fat": 16,
+      "carbs": 7
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 150
+      }
+    ]
+  },
+  {
+    "id": "vinegret",
+    "name": {
+      "en": "Vinegret",
+      "uk": "Вінегрет"
+    },
+    "per100g": {
+      "kcal": 90,
+      "protein": 1.5,
+      "fat": 5.5,
+      "carbs": 9.5
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 150
+      }
+    ]
+  },
+  {
+    "id": "veg_salad",
+    "name": {
+      "en": "Vegetable salad with oil",
+      "uk": "Овочевий салат з олією"
+    },
+    "per100g": {
+      "kcal": 70,
+      "protein": 1,
+      "fat": 5,
+      "carbs": 5
+    },
+    "units": [
+      {
+        "name": {
+          "en": "portion",
+          "uk": "порція"
+        },
+        "grams": 150
+      }
+    ]
+  },
+  {
+    "id": "pizza",
+    "name": {
+      "en": "Pizza",
+      "uk": "Піца"
+    },
+    "per100g": {
+      "kcal": 260,
+      "protein": 11,
+      "fat": 10,
+      "carbs": 31
+    },
+    "units": [
+      {
+        "name": {
+          "en": "slice",
+          "uk": "шматок"
+        },
+        "grams": 120
+      }
+    ]
+  },
+  {
+    "id": "shawarma",
+    "name": {
+      "en": "Shawarma",
+      "uk": "Шаурма"
+    },
+    "per100g": {
+      "kcal": 200,
+      "protein": 10,
+      "fat": 9,
+      "carbs": 20
+    },
+    "units": [
+      {
+        "name": {
+          "en": "piece",
+          "uk": "штука"
+        },
+        "grams": 400
+      }
+    ]
+  },
+  {
+    "id": "burger",
+    "name": {
+      "en": "Burger",
+      "uk": "Бургер"
+    },
+    "per100g": {
+      "kcal": 250,
+      "protein": 13,
+      "fat": 12,
+      "carbs": 24
+    },
+    "units": [
+      {
+        "name": {
+          "en": "burger",
+          "uk": "бургер"
+        },
+        "grams": 220
+      }
+    ]
+  },
+  {
+    "id": "cake",
+    "name": {
+      "en": "Cake",
+      "uk": "Торт"
+    },
+    "per100g": {
+      "kcal": 380,
+      "protein": 5,
+      "fat": 20,
+      "carbs": 45
+    },
+    "units": [
+      {
+        "name": {
+          "en": "slice",
+          "uk": "шматок"
+        },
+        "grams": 100
+      }
+    ]
+  }
+]

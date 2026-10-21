@@ -60,3 +60,41 @@ Each working session uses its own branch; merge into `main` only when the app bu
 Core package: Swift 6 language mode (strict concurrency, verified on Linux). App target: Swift 5
 mode, to avoid fighting strict concurrency in SwiftUI/SwiftData code that can only be compiled on
 macOS. Revisit once the app is stable.
+
+### D-015 In-app language switch
+Settings gets a language picker: Automatic (iPhone language) / English / Українська. The choice
+is stored on the device and applies after the app restarts. Extends spec #13, which only
+covered switching the iPhone language. iOS's own per-app language setting stays available.
+
+### D-016 Logging food the owner did not cook
+Not everything eaten comes from the app's recipes (food from family, cafés, packaged snacks).
+Ways to log it, all offline:
+- **Typical dishes**: a built-in list of common dishes (borscht, cutlet, varenyky…) with
+  nutrition per 100 g and small / medium / large portion sizes.
+- **My products**: packaged foods and snacks (yogurt, kefir, bars…) entered once from the label
+  (per 100 g + pack weight), then logged in one tap by pack or grams. Stored on device.
+- **Paste from Claude**: the owner asks the Claude app on the phone (chat, no API key) to
+  estimate a dish from a photo using a saved prompt; Claude answers with a one-line code that the
+  app reads from the clipboard. The app itself still makes no network requests (D-011).
+- **Outside food into "Ready"**: a container for several days becomes N ready portions with
+  estimated nutrition, eaten from Today like home-cooked portions.
+- Plain manual kcal / P / F / C entry stays as the fallback.
+Claude Code (on the Mac) is used for maintaining the catalogs, not for daily logging.
+
+### D-017 Plan is built around shopping trips
+The owner shops 1–2 times a week. The Plan tab covers the days until the next trip: a grid of
+days × meals, "Fill" picks recipes (cook-ahead batches cover several slots, protein target,
+ingredient reuse, low cost), and every slot can be swapped, locked or marked "outside food"
+(nothing to buy). The shopping list holds only what is missing, rounded to packs, with a total,
+plus a "check at home" section with needed amounts for ticked items (the fridge has no
+quantities, D-006). After shopping, bought items go into the fridge only on the owner's
+explicit tap. Supersedes the separate "N days" idea in spec #10; spec #9 cook-ahead stays.
+
+### D-018 Repo lives outside iCloud-synced folders
+iCloud Desktop sync adds extended attributes that break `codesign` for build products in the
+repo. The local checkout lives in `~/Developer/eat-better`.
+
+### D-019 Save important writes immediately
+SwiftData autosave can lag; an app killed right after "Cooked" lost the new portions in testing.
+Logging, cooking, plan edits and "put in the fridge" call `ModelContext.saveNow()`, and the app
+saves when it leaves the foreground.

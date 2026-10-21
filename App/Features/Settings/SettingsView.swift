@@ -6,6 +6,7 @@ struct SettingsView: View {
     @Environment(CatalogStore.self) private var store
     @Environment(\.modelContext) private var context
     @Query private var profiles: [ProfileRecord]
+    @AppStorage(AppLanguage.storageKey) private var language: AppLanguage = .automatic
 
     var body: some View {
         NavigationStack {
@@ -16,6 +17,15 @@ struct SettingsView: View {
                     Section {
                         Button("Set up profile") { context.insert(ProfileRecord()) }
                     }
+                }
+
+                Section {
+                    Picker("Language", selection: $language) {
+                        ForEach(AppLanguage.allCases, id: \.self) { $0.title.tag($0) }
+                    }
+                    .onChange(of: language) { _, new in new.apply() }
+                } footer: {
+                    Text("Takes effect after you close and reopen the app.")
                 }
 
                 Section("Data") {
@@ -57,7 +67,7 @@ private struct ProfileForm: View {
                 ForEach(Goal.allCases, id: \.self) { Text($0.title).tag($0) }
             }
             Stepper(value: $profile.defaultStorageDays, in: 1...14) {
-                Text("Cooked food keeps: \(profile.defaultStorageDays) days")
+                Text("Cooked food keeps: ^[\(profile.defaultStorageDays) day](inflect: true)")
             }
         }
 

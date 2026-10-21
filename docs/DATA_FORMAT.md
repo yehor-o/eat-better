@@ -54,3 +54,36 @@ Owner's own: `Private/recipes.json` — when present it **replaces** the demo se
 - `storageDays`: optional; defaults to the app setting (7 days).
 - Every `ingredient` id must exist in the catalog, otherwise loading fails with an error shown
   on the Recipes tab.
+
+## Typical dishes
+
+Shared: `Packages/EatBetterCore/Sources/EatBetterCore/Resources/dishes.json`.
+Extra private ones (optional): `Private/dishes.json`, same format, appended at load time — e.g.
+dishes the family often brings. Used only for logging food (D-016), never for planning.
+
+```json
+{
+  "id": "cutlet",
+  "name": {"en": "Meat cutlet, fried", "uk": "Котлета м'ясна смажена"},
+  "per100g": {"kcal": 230, "protein": 15, "fat": 15, "carbs": 9},
+  "units": [{"name": {"en": "cutlet", "uk": "котлета"}, "grams": 90}]
+}
+```
+
+- `units`: the first one is the default portion (small / medium / large = ×0.7 / ×1 / ×1.4);
+  the last one is offered as a counter ("2 × cutlet").
+- Values are approximate home-cooking averages.
+
+## Food code from Claude
+
+One food per line; text around it is ignored. Numbers are per portion, decimal comma or dot.
+
+```
+EB1|name|kcal|protein g|fat g|carbs g|portions
+EB1|Котлети з пюре|650|35|30|55|3
+```
+
+`portions` is optional (default 1); more than 1 means a container: one can be eaten now, the
+rest go to "Ready in the fridge". The prompt the app copies for Claude is the `claude.prompt`
+string in `App/Resources/*.lproj/Localizable.strings`.
+

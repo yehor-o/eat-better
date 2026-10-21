@@ -7,12 +7,14 @@ struct RecipeDetailView: View {
     let catalog: Catalog
 
     @Environment(\.modelContext) private var context
+    @Query private var profiles: [ProfileRecord]
     @State private var loggedAt: Date?
+    @State private var cookedAt: Date?
 
     var body: some View {
         List {
             Section {
-                Text("\(recipe.servings) servings · \(recipe.totalMinutes) min")
+                Text("^[\(recipe.servings) serving](inflect: true) · \(recipe.totalMinutes) min")
                     .foregroundStyle(.secondary)
             }
 
@@ -39,27 +41,55 @@ struct RecipeDetailView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(verbatim: step.text.current)
                             if let minutes = step.timerMinutes {
-                                Label("\(minutes) min", systemImage: "timer")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                // Not a Label: inside a List it pads the icon and pulls the separator inward.
+                                HStack(spacing: 4) {
+                                    Image(systemName: "timer")
+                                    Text("\(minutes) min")
+                                }
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                             }
                         }
                     }
+                    .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 }
             }
 
             Section {
-                // TODO(T-012): cooking mode with timers and scaling; T-013: "cooked" → ready portions.
-                Button("Log 1 serving as eaten", systemImage: "checkmark.circle") {
+                // TODO(T-012): cooking mode with timers and scaling.
+                // The confirmation lives in the button itself: a row below it would sit under the tab bar.
+                Button {
                     context.insert(MealLogEntry(
                         title: recipe.name.current,
                         recipeID: recipe.id,
                         nutrition: catalog.nutritionPerServing(of: recipe)
                     ))
                     loggedAt = .now
+                } label: {
+                    if loggedAt == nil {
+                        Label("Log 1 serving as eaten", systemImage: "checkmark.circle")
+                    } else {
+                        Label("Logged. Tap to log 1 more serving", systemImage: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                    }
                 }
-                if loggedAt != nil {
-                    Text("Logged.").foregroundStyle(.green)
+                .sensoryFeedback(.success, trigger: loggedAt)
+
+                if recipe.servings > 1 {
+                    Button {
+                        context.addCookedPortions(of: recipe, catalog: catalog,
+                                                  defaultStorageDays: profiles.first?.defaultStorageDays ?? 7)
+                        cookedAt = .now
+                    } label: {
+                        if cookedAt == nil {
+                            Label("Cooked: \(recipe.servings) portions to Ready", systemImage: "frying.pan")
+                        } else {
+                            Label("Added to \"Ready in the fridge\"", systemImage: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                        }
+                    }
+                    .disabled(cookedAt != nil)
+                    .sensoryFeedback(.success, trigger: cookedAt)
                 }
             }
         }
@@ -73,6 +103,7 @@ struct RecipeDetailView: View {
             return grams
         }
         let count = household.count.formatted(.number.precision(.fractionLength(0...1)))
-        return "\(grams) (≈ \(count) × \(household.unit.name.current))"
+        // Unit names may carry their own brackets ("cup (250 ml)"), so no brackets around this part.
+        return "\(grams) · ≈ \(count) × \(household.unit.name.current)"
     }
 }
