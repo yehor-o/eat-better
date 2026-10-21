@@ -114,7 +114,8 @@ public enum MealPlanner {
                 fills[slot] = .recipe(batch.recipe.id)
                 continue
             }
-            let candidates = catalog.recipes.filter { MealSuggester.fits($0, meal: slot.meal) }
+            // Occasional dishes only get into a plan by hand.
+            let candidates = catalog.recipes.filter { !$0.isOccasional && MealSuggester.fits($0, meal: slot.meal) }
             let best = candidates.max { a, b in
                 let sa = score(a, slot: slot, fills: fills, request: request, catalog: catalog)
                 let sb = score(b, slot: slot, fills: fills, request: request, catalog: catalog)

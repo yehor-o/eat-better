@@ -327,6 +327,25 @@ private func bundledCatalog() throws -> Catalog {
         #expect(mainBatches.allSatisfy { $0.slots.count <= $0.recipe.servings })
     }
 
+    @Test func occasionalDishesAreNeverPickedAutomatically() throws {
+        let base = try bundledCatalog()
+        // Mark every lunch/dinner dish but one as occasional: the plan must use only that one.
+        let recipes = base.recipes.map { recipe -> Recipe in
+            var copy = recipe
+            copy.occasional = recipe.mealTypes.contains(.lunch) && recipe.id != "demo_pasta_tuna"
+            return copy
+        }
+        let catalog = try Catalog(ingredients: Array(base.ingredients.values), recipes: recipes)
+        let fills = MealPlanner.fill(MealPlanner.Request(days: 2, meals: [.lunch, .dinner]), catalog: catalog)
+        #expect(Set(fills.values) == [.recipe("demo_pasta_tuna")])
+        // By hand it is fine.
+        let manual = MealPlanner.fill(
+            MealPlanner.Request(days: 1, meals: [.lunch], fixed: [PlanSlot(day: 0, meal: .lunch): .recipe("demo_chicken_buckwheat")]),
+            catalog: catalog
+        )
+        #expect(manual[PlanSlot(day: 0, meal: .lunch)] == .recipe("demo_chicken_buckwheat"))
+    }
+
     @Test func fixedSlotsAreKept() throws {
         let catalog = try bundledCatalog()
         let outside = PlanSlot(day: 0, meal: .dinner)

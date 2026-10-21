@@ -98,3 +98,15 @@ repo. The local checkout lives in `~/Developer/eat-better`.
 SwiftData autosave can lag; an app killed right after "Cooked" lost the new portions in testing.
 Logging, cooking, plan edits and "put in the fridge" call `ModelContext.saveNow()`, and the app
 saves when it leaves the foreground.
+
+### D-020 Occasional dishes are planned only by hand
+Recipes may set `"occasional": true` for special dishes (e.g. oven bakes). Auto-fill never
+picks them, so the plan stays on the cheap everyday base; the owner picks them in a slot when
+wanted ("Special dishes" in the picker). "What should I eat now?" may still offer them when
+everything is at home.
+
+### D-021 New recipes go through Claude Code for now
+The owner asks in a Claude Code session; the recipe is added to `Private/recipes.json` and the
+app is rebuilt (it has to be re-signed weekly anyway). Pasting a recipe from the Claude app on the
+phone is a later task (T-020).
+

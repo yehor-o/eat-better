@@ -15,10 +15,10 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Numbers refer to [SPEC.md
       connect the iPhone, install, trust the developer profile (steps in PROJECT_STATE.md).
 - [ ] T-015 Backup export / import (JSON via share sheet / file importer) — spec #12. Do this
       before relying on the data on the phone.
-- [ ] T-008 Private recipe set: agree on 15–20 dishes with the owner, write `Private/recipes.json`.
-      Bigger portions matter: with the demo recipes a planned day is ~1600 kcal.
-- [ ] T-019 Plan: count calories too — add a snack slot or scale portions so a planned day
-      reaches the kcal target, not only protein.
+- [ ] T-019 Plan: add a snack slot (or scale portions) so a planned day reaches the kcal target.
+      With the owner's recipes 3 meals give ~2000–2200 kcal; a snack adds ~400–700.
+- [ ] T-020 Paste a recipe from the Claude app on the phone (recipe code → stored on device,
+      merged with `Private/recipes.json`) — D-021.
 - [ ] T-007 Verify and refresh ingredient prices (stores the owner uses — see Private/CONTEXT.md)
       and extend the catalog.
 - [ ] T-011 Ingredient detail screen with price editing (`PriceOverride`) — spec #2.

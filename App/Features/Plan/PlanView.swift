@@ -309,11 +309,21 @@ struct RecipePickerView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        let fitting = catalog.recipes.filter { MealSuggester.fits($0, meal: meal) }
+        let fitting = catalog.recipes.filter { MealSuggester.fits($0, meal: meal) && !$0.isOccasional }
+        let special = catalog.recipes.filter { MealSuggester.fits($0, meal: meal) && $0.isOccasional }
         let others = catalog.recipes.filter { !MealSuggester.fits($0, meal: meal) }
         NavigationStack {
             List {
                 Section { rows(fitting) } header: { Text(meal.title) }
+                if !special.isEmpty {
+                    Section {
+                        rows(special)
+                    } header: {
+                        Text("Special dishes")
+                    } footer: {
+                        Text("The plan never adds these on its own.")
+                    }
+                }
                 if !others.isEmpty {
                     Section("Other dishes") { rows(others) }
                 }

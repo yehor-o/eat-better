@@ -52,6 +52,7 @@ Owner's own: `Private/recipes.json` — when present it **replaces** the demo se
 - `grams`: for the whole recipe (all servings).
 - `optional`: never blocks "can cook now" and is never put on a shopping list.
 - `storageDays`: optional; defaults to the app setting (7 days).
+- `occasional`: optional, default `false`. A special dish the plan never picks by itself (D-020).
 - Every `ingredient` id must exist in the catalog, otherwise loading fails with an error shown
   on the Recipes tab.
 

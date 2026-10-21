@@ -145,6 +145,8 @@ public struct Recipe: Codable, Hashable, Identifiable, Sendable {
     public var totalMinutes: Int
     /// Days a cooked portion keeps in the fridge. `nil` means the app default.
     public var storageDays: Int?
+    /// A special dish for now and then: the plan never picks it on its own (D-020).
+    public var occasional: Bool?
     public var ingredients: [RecipeIngredient]
     public var steps: [RecipeStep]
 
@@ -155,6 +157,7 @@ public struct Recipe: Codable, Hashable, Identifiable, Sendable {
         servings: Int,
         totalMinutes: Int,
         storageDays: Int? = nil,
+        occasional: Bool? = nil,
         ingredients: [RecipeIngredient],
         steps: [RecipeStep]
     ) {
@@ -164,7 +167,10 @@ public struct Recipe: Codable, Hashable, Identifiable, Sendable {
         self.servings = servings
         self.totalMinutes = totalMinutes
         self.storageDays = storageDays
+        self.occasional = occasional
         self.ingredients = ingredients
         self.steps = steps
     }
+
+    public var isOccasional: Bool { occasional ?? false }
 }

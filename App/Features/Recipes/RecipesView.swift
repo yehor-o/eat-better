@@ -74,7 +74,12 @@ struct RecipeRow: View {
     var body: some View {
         let n = catalog.nutritionPerServing(of: recipe)
         VStack(alignment: .leading, spacing: 2) {
-            Text(recipe.name.current)
+            if recipe.isOccasional {
+                // Special dish: the plan never adds it on its own (D-020).
+                Text("\(Image(systemName: "star.fill")) \(recipe.name.current)")
+            } else {
+                Text(recipe.name.current)
+            }
             Text("\(Int(n.kcal.rounded())) kcal · \(Int(n.protein.rounded())) g protein · \(recipe.totalMinutes) min")
                 .font(.caption)
                 .foregroundStyle(.secondary)

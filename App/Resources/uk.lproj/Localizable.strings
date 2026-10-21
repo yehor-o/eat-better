@@ -187,3 +187,5 @@
 "Tick these in the fridge?" = "Позначити це в холодильнику?";
 "Put %lld items in the fridge" = "Розкласти %lld продукт. у холодильник";
 "Added to \"Ready in the fridge\"" = "Додано в «Готове в холодильнику»";
+"Special dishes" = "Святкові страви";
+"The plan never adds these on its own." = "План не додає їх сам — лише коли вибереш.";
