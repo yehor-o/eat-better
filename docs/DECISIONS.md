@@ -142,3 +142,20 @@ One JSON file with all personal data (spec #12). Import always asks first and of
 is removed, the phone wins on conflicts, identical log entries and portions are not doubled, so
 importing the same file twice changes nothing). Recipes are not in the backup: they come with
 the build from `Private/recipes.json`.
+
+### D-027 Today shows the plan
+Today lists the day's planned meals ("Planned for today"). A dish with a ready portion gets
+"Ate it" (takes that portion); otherwise "Cook" opens cooking mode, and its "Cooked" / "Eat now"
+mark the plan meal. Products log one pack, outside food opens "Log food". A meal marked eaten
+(`PlanEntry.eatenAt`) shows a tick in Today and Plan and is kept when the plan is filled again.
+
+### D-028 Timers ring inside the app
+When a cooking timer ends while the app is open, the app plays a short beep itself (audio
+session `.playback`, so it also sounds with the ring switch on silent). The local notification
+(D-023) covers the locked phone; it no longer adds its own sound in the foreground, so there is
+one signal, not two. Notification permission is no longer needed for the sound.
+
+### D-029 Every recipe sets its storage days
+Cooked portions keep as long as the dish allows: 1 day for quick breakfasts, sandwiches and
+smoothies, 2–3 days for egg dishes, liver and mince, up to 4 days for plain chicken with grains.
+The 7-day app default stays only as a fallback for recipes that do not say.

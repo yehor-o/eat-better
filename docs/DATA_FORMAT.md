@@ -119,7 +119,7 @@ import, so a partial file works. Dates are Foundation's default encoding (second
   "products": [{"id": "my-1", "name": "Yogurt", "per100g": {"kcal": 90, "protein": 5, "fat": 3, "carbs": 10}, "packGrams": 300, "packPriceUAH": 45, "createdAt": 800000000}],
   "readyPortions": [{"recipeID": "r", "title": "Dish", "nutrition": {"kcal": 600, "protein": 40, "fat": 20, "carbs": 60}, "cookedAt": 800000000, "expiresAt": 800600000}],
   "log": [{"date": 800000000, "title": "Toast", "nutrition": {"kcal": 300, "protein": 10, "fat": 10, "carbs": 40}}],
-  "plan": [{"day": 800000000, "meal": "snack", "number": 1, "productID": "my-1", "isOutside": false, "isManual": true}],
+  "plan": [{"day": 800000000, "meal": "snack", "number": 1, "productID": "my-1", "isOutside": false, "isManual": true, "eatenAt": 800050000}],
   "bought": ["milk"]
 }
 ```

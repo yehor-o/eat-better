@@ -3,12 +3,15 @@ import SwiftData
 import SwiftUI
 
 struct TodayView: View {
+    @Environment(CatalogStore.self) private var store
     @Environment(\.modelContext) private var context
+    @Query private var priceOverrides: [PriceOverride]
     @Query private var profiles: [ProfileRecord]
     @Query(sort: \MealLogEntry.date, order: .reverse) private var log: [MealLogEntry]
     @Query(sort: \ReadyPortion.expiresAt) private var portions: [ReadyPortion]
     @State private var isLoggingFood = false
     @State private var isSuggesting = false
+    @State private var cooking: PlanEntry?
 
     private var todayEntries: [MealLogEntry] {
         log.filter { Calendar.current.isDateInToday($0.date) }
@@ -29,6 +32,10 @@ struct TodayView: View {
                         Text("Set up your profile in Settings to see daily targets.")
                             .foregroundStyle(.secondary)
                     }
+                }
+
+                if let catalog = store.catalog(with: priceOverrides) {
+                    PlannedTodaySection(catalog: catalog, cooking: $cooking) { isLoggingFood = true }
                 }
 
                 if !portions.isEmpty {
@@ -71,6 +78,12 @@ struct TodayView: View {
             .navigationTitle("Today")
             .sheet(isPresented: $isLoggingFood) { LogFoodView() }
             .sheet(isPresented: $isSuggesting) { SuggestionView() }
+            .fullScreenCover(item: $cooking) { entry in
+                if let catalog = store.catalog(with: priceOverrides), case .recipe(let id) = entry.fill,
+                   let recipe = catalog.recipes.first(where: { $0.id == id }) {
+                    PlannedCookingView(entry: entry, recipe: recipe, catalog: catalog)
+                }
+            }
         }
     }
 

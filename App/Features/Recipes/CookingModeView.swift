@@ -17,10 +17,13 @@ struct CookingModeView: View {
     @State private var page = 0
     @State private var timers: CookingTimers
     @State private var isConfirmingClose = false
+    /// Called after "Cooked" (false) or "Eat now" (true), e.g. to mark a plan meal.
+    private let onDone: ((_ ateOne: Bool) -> Void)?
 
-    init(recipe: Recipe, catalog: Catalog, portions: Binding<Int>) {
+    init(recipe: Recipe, catalog: Catalog, portions: Binding<Int>, onDone: ((_ ateOne: Bool) -> Void)? = nil) {
         self.recipe = recipe
         self.catalog = catalog
+        self.onDone = onDone
         _portions = portions
         _timers = State(initialValue: CookingTimers(recipeID: recipe.id))
     }
@@ -150,6 +153,7 @@ struct CookingModeView: View {
             Spacer()
             Button {
                 context.addCookedPortions(of: scaled, catalog: catalog, defaultStorageDays: storageDays)
+                onDone?(false)
                 dismiss()
             } label: {
                 Label("Cooked: \(portions) portions to Ready", systemImage: "refrigerator")
@@ -158,6 +162,7 @@ struct CookingModeView: View {
             .buttonStyle(.borderedProminent)
             Button {
                 eatOneNow(portions: portions)
+                onDone?(true)
                 dismiss()
             } label: {
                 Group {

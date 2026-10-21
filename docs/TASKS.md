@@ -42,6 +42,14 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Numbers refer to [SPEC.md
 - [x] T-023 Recipe: choose how many portions to cook (1–12); ingredients follow it, "Cooked"
       puts that many portions into Ready, cooking mode starts with the same number
 - [x] T-024 Save right away after eating, logging, fridge and shopping ticks, My products (D-019)
+- [x] T-025 Today: "Planned for today" with Ate it / Cook (D-027)
+- [x] T-026 Profile: weight, height and age typed with the keyboard; "Done" in the navigation bar
+      while a number field is active; every change saved at once
+- [x] T-027 Recipes: storage days for every recipe (D-029), 20 new dishes (41 in all), flour and
+      kefir in the catalog
+- [x] T-028 Fridge: search by product or category, filter "at home" / "not at home" / category
+- [x] T-029 Cooking timer rings inside the app (D-028)
+- [x] T-030 App icon (bowl with a sprout), drawn by `scripts/make-app-icon.py`
 - [x] T-019 Snack slot in the plan: 1–2 snacks a day from snack recipes and My products (D-024)
 
 ## Later

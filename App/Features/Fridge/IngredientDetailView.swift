@@ -70,6 +70,7 @@ struct IngredientDetailView: View {
             }
         }
         .navigationTitle(ingredient.name.current)
+        .numberKeyboardDone()
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: load)
         .onChange(of: packGrams) { savedAt = nil }

@@ -114,6 +114,7 @@ struct FoodAmountView: View {
             }
         }
         .navigationTitle(title)
+        .numberKeyboardDone()
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -174,6 +175,7 @@ struct ManualFoodView: View {
             }
         }
         .navigationTitle("Enter numbers")
+        .numberKeyboardDone()
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -217,6 +219,7 @@ struct MyProductForm: View {
             }
         }
         .navigationTitle(product == nil ? "New product" : "Edit product")
+        .numberKeyboardDone()
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             guard let product else { return }
@@ -246,12 +249,20 @@ struct MyProductForm: View {
     }
 }
 
+extension View {
+    /// Dragging the form hides the decimal pad, which has no return key ("Done" lives in NumberField).
+    func numberKeyboardDone() -> some View {
+        scrollDismissesKeyboard(.interactively)
+    }
+}
+
 /// A labelled decimal input. The value follows every keystroke (a format-based TextField only
 /// commits when it loses focus, so tapping Save with the keyboard up used the old number).
 struct NumberField: View {
     let title: LocalizedStringKey
     @Binding var value: Double?
     @State private var text = ""
+    @FocusState private var isFocused: Bool
 
     init(_ title: LocalizedStringKey, value: Binding<Double?>) {
         self.title = title
@@ -263,6 +274,17 @@ struct NumberField: View {
             TextField(title, text: $text, prompt: Text(verbatim: "0"))
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
+                .focused($isFocused)
+                // Only the focused field adds the button, so a form with many fields shows one. It sits
+                // in the navigation bar: a toolbar above the decimal pad does not show on every iOS.
+                .toolbar {
+                    if isFocused {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button("Done") { isFocused = false }
+                                .bold()
+                        }
+                    }
+                }
         }
         .onAppear { text = Self.format(value) }
         .onChange(of: value) { _, new in

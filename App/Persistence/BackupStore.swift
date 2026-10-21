@@ -37,7 +37,7 @@ enum BackupStore {
             },
             plan: try context.fetch(FetchDescriptor<PlanEntry>(sortBy: [SortDescriptor(\.day)])).map {
                 Backup.PlanItem(day: $0.day, meal: $0.mealRaw, number: $0.number, recipeID: $0.recipeID, productID: $0.productID,
-                                isOutside: $0.isOutside, isManual: $0.isManual, cookedAt: $0.cookedAt)
+                                isOutside: $0.isOutside, isManual: $0.isManual, cookedAt: $0.cookedAt, eatenAt: $0.eatenAt)
             },
             bought: try context.fetch(FetchDescriptor<BoughtItem>()).map(\.ingredientID).sorted()
         )
@@ -98,6 +98,7 @@ enum BackupStore {
             let entry = PlanEntry(day: item.day, meal: MealType(rawValue: item.meal) ?? .lunch, number: item.number,
                                   recipeID: item.recipeID, productID: item.productID, isOutside: item.isOutside, isManual: item.isManual)
             entry.cookedAt = item.cookedAt
+            entry.eatenAt = item.eatenAt
             context.insert(entry)
         }
         try context.save()

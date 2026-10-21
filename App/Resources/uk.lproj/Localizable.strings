@@ -248,3 +248,21 @@
 "This backup comes from a newer version of the app." = "Цю копію зроблено новішою версією застосунку.";
 "Could not read this file as a backup." = "Не вдалося прочитати цей файл як резервну копію.";
 "Backup imported." = "Копію імпортовано.";
+
+/* Today: plan (T-025) */
+"Planned for today" = "За планом сьогодні";
+"Cook" = "Приготувати";
+"Eaten" = "З'їдено";
+"Weight, kg" = "Вага, кг";
+"Height, cm" = "Зріст, см";
+"Age, years" = "Вік, років";
+
+/* Fridge: search and filter */
+"Product or category" = "Продукт або категорія";
+"Show" = "Показати";
+"Everything" = "Усе";
+"At home" = "Є вдома";
+"Not at home" = "Немає вдома";
+"Category" = "Категорія";
+"All categories" = "Усі категорії";
+"Filter" = "Фільтр";

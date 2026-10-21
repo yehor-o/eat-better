@@ -62,6 +62,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .numberKeyboardDone()
             .fileExporter(
                 isPresented: Binding(get: { exportDocument != nil }, set: { if !$0 { exportDocument = nil } }),
                 document: exportDocument,
@@ -134,18 +135,17 @@ struct SettingsView: View {
 
 private struct ProfileForm: View {
     @Bindable var profile: ProfileRecord
+    @Environment(\.modelContext) private var context
 
     var body: some View {
         Section("Profile") {
-            Stepper(value: $profile.weightKg, in: 35...200, step: 0.5) {
-                Text("Weight: \(profile.weightKg, specifier: "%.1f") kg")
-            }
-            Stepper(value: $profile.heightCm, in: 120...230, step: 1) {
-                Text("Height: \(Int(profile.heightCm)) cm")
-            }
-            Stepper(value: $profile.ageYears, in: 14...100) {
-                Text("Age: \(profile.ageYears)")
-            }
+            // Typed, not stepped: a new profile starts at 70 kg / 175 cm / 25 y.
+            NumberField("Weight, kg", value: number(\.weightKg, in: 35...200))
+            NumberField("Height, cm", value: number(\.heightCm, in: 120...230))
+            NumberField("Age, years", value: Binding(
+                get: { Double(profile.ageYears) },
+                set: { if let new = $0, (14...100).contains(new) { profile.ageYears = Int(new) } }
+            ))
             Picker("Sex", selection: $profile.sex) {
                 ForEach(Sex.allCases, id: \.self) { Text($0.title).tag($0) }
             }
@@ -163,5 +163,16 @@ private struct ProfileForm: View {
         Section("Daily targets") {
             NutritionRows(value: DailyTargets.targets(for: profile.bodyProfile))
         }
+        // Every change is written at once (D-019), so a quick app kill keeps the new profile.
+        .onChange(of: profile.bodyProfile) { context.saveNow() }
+        .onChange(of: profile.defaultStorageDays) { context.saveNow() }
+    }
+
+    /// Keeps the last valid value while the owner is still typing (e.g. "1" on the way to "183").
+    private func number(_ keyPath: ReferenceWritableKeyPath<ProfileRecord, Double>, in range: ClosedRange<Double>) -> Binding<Double?> {
+        Binding(
+            get: { profile[keyPath: keyPath] },
+            set: { if let new = $0, range.contains(new) { profile[keyPath: keyPath] = new } }
+        )
     }
 }

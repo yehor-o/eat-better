@@ -136,7 +136,11 @@ struct PlanView: View {
                     case nil:
                         Text(verbatim: "—").foregroundStyle(.secondary)
                     }
-                    if let batch, case .recipe = fill {
+                    if entry?.eatenAt != nil {
+                        Label("Eaten", systemImage: "checkmark.circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.green)
+                    } else if let batch, case .recipe = fill {
                         batchNote(batch, slot: slot, cooked: entry?.cookedAt != nil || cookEntryCooked(batch))
                     }
                 }
@@ -253,7 +257,8 @@ struct PlanView: View {
         var fixed: [PlanSlot: SlotFill] = [:]
         for entry in entries {
             guard let day = dayIndex(of: entry), let fill = entry.fill else { continue }
-            if entry.isManual || entry.cookedAt != nil {
+            // Hand-picked, cooked or already eaten meals stay as they are.
+            if entry.isManual || entry.cookedAt != nil || entry.eatenAt != nil {
                 fixed[PlanSlot(day: day, meal: entry.meal, number: entry.number)] = fill
             } else {
                 context.delete(entry)

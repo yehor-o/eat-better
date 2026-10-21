@@ -20,6 +20,21 @@ extension MealType {
 }
 
 extension IngredientCategory {
+    /// The same title as plain text, for search.
+    var localizedName: String {
+        switch self {
+        case .meatFish: String(localized: "Meat & fish")
+        case .dairyEggs: String(localized: "Dairy & eggs")
+        case .grains: String(localized: "Grains & pasta")
+        case .vegetables: String(localized: "Vegetables")
+        case .fruits: String(localized: "Fruits")
+        case .bakery: String(localized: "Bakery")
+        case .oilsSpices: String(localized: "Oils & spices")
+        case .canned: String(localized: "Canned")
+        case .other: String(localized: "Other")
+        }
+    }
+
     var title: LocalizedStringKey {
         switch self {
         case .meatFish: "Meat & fish"

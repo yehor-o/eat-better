@@ -204,6 +204,8 @@ final class PlanEntry {
     var isOutside: Bool
     var isManual: Bool
     var cookedAt: Date?
+    /// Set when the owner ate this meal from the Today tab.
+    var eatenAt: Date?
 
     init(day: Date, meal: MealType, number: Int = 0, recipeID: String?, productID: String? = nil, isOutside: Bool = false, isManual: Bool) {
         self.day = day

@@ -11,21 +11,26 @@ Checked in the simulator, not yet run on the iPhone.
   household measures, fridge matching, shopping list, `Food`, `ClaudeFoodCode`, `MealSuggester`,
   `MealPlanner` (+ snacks and My products, D-024), `PackPrice` / `Catalog.applying` (D-025),
   `Backup` (file format and "add" merge, D-026).
-- **Data**: 33 generic ingredients in the shared catalog; the owner's 21 recipes and store prices
-  for all 33 ingredients live in `Private/` (`recipes.json`, `prices.json`) and are bundled at
+- **Data**: 35 generic ingredients in the shared catalog; the owner's 41 recipes (each with its own
+  storage days, D-029) and store prices for all 35 ingredients live in `Private/` (`recipes.json`, `prices.json`) and are bundled at
   build time. `Private/EatBetter-transfer.json` is the file for moving to the iPhone: fridge,
   My products, plan and settings, without profile, food log and ready portions.
 - **App**:
-  - Today: "What should I eat now?", "Log food", ready portions, day totals.
+  - Today: "What should I eat now?", "Log food", day totals, "Planned for today" with Ate it /
+    Cook (D-027), ready portions.
   - Recipes: detail starts with "Portions: N" (1–12; the ingredient amounts follow it),
     "Start cooking" and "Cooked: N portions to Ready". Cooking mode: same portion count, one step per page
     in large text, step timers with a local notification (D-023), the screen stays on, "Cooked"
     adds servings × scale portions or "Eat 1 now, the rest to Ready".
-  - Fridge: tap a name → ingredient card with nutrition, measures, catalog price and the owner's
+  - Fridge: search (product or category), filter at home / not at home / category; tap a name →
+    ingredient card with nutrition, measures, catalog price and the owner's
     own price / pack (T-011). Rows show pack and price.
   - Plan: breakfast, lunch, snack, dinner (+ a second snack when the day is short); snacks from
     snack recipes or My products; My products on the shopping list by pack (with price if set).
-  - Settings: language; Export / Import backup (Replace everything or Add to what is here).
+  - Settings: profile numbers typed with the keyboard ("Done" top right); language; Export /
+    Import backup (Replace everything or Add to what is here).
+  - App icon: bowl with a sprout (`App/Assets.xcassets`, drawn by `scripts/make-app-icon.py`).
+  - Cooking timers beep inside the app (D-028) and notify on the locked screen (D-023).
   - My products have an optional pack price.
 - **Checked in the simulator (UK UI)**: migration of the old store; store prices applied; own
   price saved with one tap while the keyboard is up, reset to catalog; plan fill with snacks

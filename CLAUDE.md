@@ -42,13 +42,15 @@ App/                      SwiftUI app (iOS 18+)
   Persistence/            SwiftData models (personal data) and CatalogStore (recipes/ingredients)
   Shared/                 small view helpers, localized titles
   Resources/*.lproj/      Localizable.strings (en, uk)
+  Assets.xcassets/        app icon (redraw with scripts/make-app-icon.py, needs Pillow)
 Packages/EatBetterCore/   pure-Swift logic, no UI, builds and tests on Linux and macOS
   Sources/EatBetterCore/  models, DailyTargets, RecipeMath, PantryMatcher, ShoppingPlanner,
                           Food, ClaudeFoodCode, MealSuggester, MealPlanner, Backup
   Sources/.../Resources/  ingredients.json (shared), demo-recipes.json, dishes.json
   Tests/                  Swift Testing suites
 Config/                   xcconfig; signing comes from Private/Signing.xcconfig
-scripts/                  copy-private-data.sh (Xcode build phase), check-localization.py
+scripts/                  copy-private-data.sh (Xcode build phase), check-localization.py,
+                          make-app-icon.py
 docs/                     SPEC, PROJECT_STATE, DECISIONS, TASKS, DATA_FORMAT
 Private/                  git-ignored: recipes.json, ingredients.json, dishes.json, prices.json,
                           Signing.xcconfig, CONTEXT.md, backup files

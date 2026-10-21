@@ -107,9 +107,10 @@ public struct Backup: Codable, Equatable, Sendable {
         public var isOutside: Bool
         public var isManual: Bool
         public var cookedAt: Date?
+        public var eatenAt: Date?
 
         public init(day: Date, meal: String, number: Int = 0, recipeID: String?, productID: String? = nil,
-                    isOutside: Bool, isManual: Bool, cookedAt: Date?) {
+                    isOutside: Bool, isManual: Bool, cookedAt: Date?, eatenAt: Date? = nil) {
             self.day = day
             self.meal = meal
             self.number = number
@@ -118,6 +119,7 @@ public struct Backup: Codable, Equatable, Sendable {
             self.isOutside = isOutside
             self.isManual = isManual
             self.cookedAt = cookedAt
+            self.eatenAt = eatenAt
         }
     }
 
