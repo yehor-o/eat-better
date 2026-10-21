@@ -1,11 +1,11 @@
 # Project state
 
-_Last updated: 2026-10-21 (backup, snacks, store prices, price editing, cooking mode)_
+_Last updated: 2026-10-21 evening (merged into `main`)_
 
 ## Where we are
-`main` holds everything up to the owner's recipes. Today's work is on the branch
-`claude/backup-snacks-prices-cooking` (pushed, **not merged** — the owner merges after a look).
-Checked in the simulator, not yet run on the iPhone.
+Everything is in `main` (branch `claude/backup-snacks-prices-cooking` merged on the owner's
+request, CI green). Checked in the simulator, not yet run on the iPhone (T-006). New work goes
+on its own branch from `main`.
 
 - **Core** (`Packages/EatBetterCore`, 48 tests): daily targets, recipe nutrition / scaling /
   household measures, fridge matching, shopping list, `Food`, `ClaudeFoodCode`, `MealSuggester`,
@@ -38,7 +38,11 @@ Checked in the simulator, not yet run on the iPhone.
   → 6 portions in Ready, fridge unchanged; 4-minute timer → notification on the locked screen;
   export → file in Files; Replace import restores the file exactly; Add import twice → no
   duplicates; the transfer file gives an empty Today / Ready and no profile.
-  Not checked by hand: EN UI of the new screens, timer sound (simulator), iCloud Drive.
+  Later the same day: portion stepper → 3 portions in Ready; "Planned for today" → Cook → Eat now
+  marks the meal and logs it, product "Ate it" logs one pack; typed profile numbers are saved
+  even when the app is killed right after; fridge search "овоч" and the "not at home" filter;
+  the app icon on the home screen; eating and ticks survive an immediate app kill.
+  Not checked by hand: EN UI of the new screens, timer sound (simulator has none), iCloud Drive.
 
 ## Next step
 1. T-006: install on the iPhone (steps below), then Settings → Import backup →
